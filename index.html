@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🛠️ Minecraft Crafting Recipes — PC Texture Fixed</title>
+<title>🛠️ Minecraft Crafting Recipes — Bedrock 1.21.11</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -20,10 +20,7 @@ header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.6rem,5vw,2.6r
 .recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:16px;padding:0 15px;max-width:1200px;margin:0 auto;}
 .recipe-card{background:rgba(31,42,68,.85);border:2px solid rgba(255,221,51,.25);border-radius:14px;padding:12px;text-align:center;cursor:pointer;transition:.3s;}
 .recipe-card:hover{transform:scale(1.06);border-color:#ffdd33;box-shadow:0 10px 25px rgba(255,221,51,.3);}
-
-/* CHỐNG LỖI HIỂN THỊ TEXTURE NHÒE */
 .recipe-card img{width:70px;height:70px;margin-bottom:8px;image-rendering:pixelated;}
-
 .no-results{grid-column:1/-1;text-align:center;padding:50px;color:#aaa;font-size:1.1rem;}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:100;padding:15px;}
 .modal-overlay.active{display:flex;}
@@ -39,18 +36,14 @@ header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.6rem,5vw,2.6r
 </head>
 <body>
 
-<audio id="clickSound" preload="auto">
-  <source src="https://www.soundjay.com/buttons/sounds/button-16.mp3" type="audio/mpeg">
-</audio>
-
 <header>
   <h1>🛠️ Minecraft Recipes</h1>
-  <p style="color:#b8ffd0;opacity:0.9;">PC Texture • Fixed Shield Icon • Audio Enabled</p>
+  <p style="color:#b8ffd0;opacity:0.9;">Bedrock 1.21.11 • Comprehensive Crafting</p>
 </header>
 
 <div class="search-wrap">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Tìm công thức... (mace, shield, boat...)" />
+    <input type="text" id="searchInput" placeholder="Tìm công thức... (mace, shield, boat, observer...)" />
   </div>
 </div>
 
@@ -76,48 +69,112 @@ header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.6rem,5vw,2.6r
 </div>
 
 <script>
-// ================== ÂM THANH & SOURCE ẢNH ==================
-const clickSound = document.getElementById('clickSound');
-function playClick() {
-  clickSound.currentTime = 0;
-  clickSound.volume = 0.4;
-  clickSound.play();
-}
-
+// ================== FIX LỖI ẢNH SIÊU ỔN ĐỊNH ==================
 const ITEM_URL = "https://raw.githubusercontent.com/misode/mcmeta/assets/assets/minecraft/textures/item/";
 const BLOCK_URL = "https://raw.githubusercontent.com/misode/mcmeta/assets/assets/minecraft/textures/block/";
-const ENTITY_URL = "https://raw.githubusercontent.com/misode/mcmeta/assets/assets/minecraft/textures/entity/";
 
 function getIcon(id) { 
-  // Fix lỗi Shield icon bị thiếu
-  if (id === 'shield') return ITEM_URL + "shield.png";
+  // Fix trường hợp Shield có tên khác nhau giữa các bộ texture
+  if(id === 'shield_base' || id === 'shield') return ITEM_URL + "shield.png";
   return ITEM_URL + id + ".png"; 
 }
-
 function formatName(id) { return id.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); }
 const I = id => ({ id: id, icon: getIcon(id), name: formatName(id) });
 
 let RECIPES = [];
 
+// ================== CÁC CÔNG THỨC ĐẶC BIỆT / THƯỜNG DÙNG ==================
 const stick = I('stick');
 const cobble = I('cobblestone');
 const iron = I('iron_ingot');
+const gold = I('gold_ingot');
+const redstone = I('redstone');
 const planks = I('oak_planks');
 
-// Items 1.21 & Cơ bản (Fixed Shield link)
-RECIPES.push({ id:'mace', name:'Mace', cat:'Combat', icon: getIcon('mace'), desc: 'Vũ khí cực mạnh từ 1.21.', grid: [null,null,null, null,I('heavy_core'),null, null,I('breeze_rod'),null], count: 1 });
-RECIPES.push({ id:'shield', name:'Shield', cat:'Combat', icon: getIcon('shield'), desc: 'Khiên bảo vệ khỏi sát thương.', grid: [planks,iron,planks, planks,planks,planks, null,planks,null], count: 1 });
+RECIPES.push({ id:'mace', name:'Mace', cat:'Combat', icon: getIcon('mace'), desc: 'Vũ khí mạnh mẽ từ 1.21.', grid: [null,null,null, null,I('heavy_core'),null, null,I('breeze_rod'),null], count: 1 });
+RECIPES.push({ id:'stick', name:'Stick', cat:'Misc', icon: getIcon('stick'), desc: 'Que gỗ cơ bản.', grid: [null,planks,null, null,planks,null, null,null,null], count: 4 });
 RECIPES.push({ id:'crafting_table', name:'Crafting Table', cat:'Build', icon: BLOCK_URL + 'crafting_table_top.png', desc: 'Bàn chế tạo.', grid: [null,null,null, null,planks,planks, null,planks,planks], count: 1 });
-RECIPES.push({ id:'stick', name:'Stick', cat:'Misc', icon: getIcon('stick'), desc: 'Gậy gỗ.', grid: [null,planks,null, null,planks,null, null,null,null], count: 4 });
+RECIPES.push({ id:'furnace', name:'Furnace', cat:'Build', icon: BLOCK_URL + 'furnace_front.png', desc: 'Lò nung.', grid: [cobble,cobble,cobble, cobble,null,cobble, cobble,cobble,cobble], count: 1 });
+RECIPES.push({ id:'chest', name:'Chest', cat:'Build', icon: BLOCK_URL + 'chest_front.png', desc: 'Rương chứa đồ.', grid: [planks,planks,planks, planks,null,planks, planks,planks,planks], count: 1 });
 
-// Tools mẫu
-const toolMats = [{ prefix: 'iron', mat: iron }, { prefix: 'diamond', mat: I('diamond') }];
+RECIPES.push({ id:'shield', name:'Shield', cat:'Combat', icon: getIcon('shield'), desc: 'Khiên bảo vệ.', grid: [planks,iron,planks, planks,planks,planks, null,planks,null], count: 1 });
+RECIPES.push({ id:'bow', name:'Bow', cat:'Combat', icon: getIcon('bow'), desc: 'Cung tên.', grid: [null,stick,I('string'), stick,null,I('string'), null,stick,I('string')], count: 1 });
+RECIPES.push({ id:'crossbow', name:'Crossbow', cat:'Combat', icon: getIcon('crossbow_standby'), desc: 'Nỏ.', grid: [stick,iron,stick, I('string'),I('tripwire_hook'),I('string'), null,stick,null], count: 1 });
+RECIPES.push({ id:'fishing_rod', name:'Fishing Rod', cat:'Tools', icon: getIcon('fishing_rod'), desc: 'Cần câu.', grid: [null,null,stick, null,stick,I('string'), stick,null,I('string')], count: 1 });
+RECIPES.push({ id:'bucket', name:'Bucket', cat:'Misc', icon: getIcon('bucket'), desc: 'Xô sắt.', grid: [null,null,null, iron,null,iron, null,iron,null], count: 1 });
+RECIPES.push({ id:'shears', name:'Shears', cat:'Tools', icon: getIcon('shears'), desc: 'Kéo cắt lông cừu.', grid: [null,null,null, iron,null,null, null,iron,null], count: 1 });
+RECIPES.push({ id:'flint_and_steel', name:'Flint and Steel', cat:'Tools', icon: getIcon('flint_and_steel'), desc: 'Bật lửa.', grid: [null,null,null, iron,null,null, null,I('flint'),null], count: 1 });
+RECIPES.push({ id:'compass', name:'Compass', cat:'Misc', icon: getIcon('compass_16'), desc: 'La bàn.', grid: [null,iron,null, iron,redstone,iron, null,iron,null], count: 1 });
+RECIPES.push({ id:'clock', name:'Clock', cat:'Misc', icon: getIcon('clock_16'), desc: 'Đồng hồ.', grid: [null,gold,null, gold,redstone,gold, null,gold,null], count: 1 });
+RECIPES.push({ id:'paper', name:'Paper', cat:'Misc', icon: getIcon('paper'), desc: 'Giấy.', grid: [null,null,null, I('sugar_cane'),I('sugar_cane'),I('sugar_cane'), null,null,null], count: 3 });
+RECIPES.push({ id:'book', name:'Book', cat:'Misc', icon: getIcon('book'), desc: 'Sách.', grid: [I('paper'),I('paper'),null, I('paper'),I('leather'),null, null,null,null], count: 1 });
+
+RECIPES.push({ id:'observer', name:'Observer', cat:'Redstone', icon: BLOCK_URL + 'observer_front.png', desc: 'Khối theo dõi.', grid: [cobble,cobble,cobble, redstone,redstone,I('quartz'), cobble,cobble,cobble], count: 1 });
+RECIPES.push({ id:'hopper', name:'Hopper', cat:'Redstone', icon: ITEM_URL + 'hopper.png', desc: 'Phễu.', grid: [iron,null,iron, iron,I('chest'),iron, null,iron,null], count: 1 });
+RECIPES.push({ id:'dispenser', name:'Dispenser', cat:'Redstone', icon: BLOCK_URL + 'dispenser_front.png', desc: 'Máy phân phát.', grid: [cobble,cobble,cobble, cobble,I('bow'),cobble, cobble,redstone,cobble], count: 1 });
+RECIPES.push({ id:'dropper', name:'Dropper', cat:'Redstone', icon: BLOCK_URL + 'dropper_front.png', desc: 'Máy thả.', grid: [cobble,cobble,cobble, cobble,null,cobble, cobble,redstone,cobble], count: 1 });
+RECIPES.push({ id:'piston', name:'Piston', cat:'Redstone', icon: BLOCK_URL + 'piston_side.png', desc: 'Piston.', grid: [planks,planks,planks, cobble,iron,cobble, cobble,redstone,cobble], count: 1 });
+RECIPES.push({ id:'sticky_piston', name:'Sticky Piston', cat:'Redstone', icon: BLOCK_URL + 'piston_top_sticky.png', desc: 'Piston dính.', grid: [null,null,null, null,I('slime_ball'),null, null,I('piston'),null], count: 1 });
+
+RECIPES.push({ id:'bread', name:'Bread', cat:'Food', icon: getIcon('bread'), desc: 'Bánh mì.', grid: [null,null,null, I('wheat'),I('wheat'),I('wheat'), null,null,null], count: 1 });
+RECIPES.push({ id:'golden_apple', name:'Golden Apple', cat:'Food', icon: getIcon('golden_apple'), desc: 'Táo vàng.', grid: [gold,gold,gold, gold,I('apple'),gold, gold,gold,gold], count: 1 });
+RECIPES.push({ id:'cake', name:'Cake', cat:'Food', icon: getIcon('cake'), desc: 'Bánh kem.', grid: [I('milk_bucket'),I('milk_bucket'),I('milk_bucket'), I('sugar'),I('egg'),I('sugar'), I('wheat'),I('wheat'),I('wheat')], count: 1 });
+
+const toolMats = [
+  { prefix: 'wooden', mat: planks }, { prefix: 'stone', mat: cobble },
+  { prefix: 'iron', mat: iron }, { prefix: 'golden', mat: gold }, { prefix: 'diamond', mat: I('diamond') }
+];
 toolMats.forEach(t => {
-  RECIPES.push({ id:`${t.prefix}_sword`, name:`${formatName(t.prefix)} Sword`, cat:'Combat', icon:getIcon(`${t.prefix}_sword`), grid:[null,t.mat,null, null,t.mat,null, null,stick,null], count:1 });
+  let m = t.mat, s = stick;
+  RECIPES.push({ id:`${t.prefix}_sword`, name:`${formatName(t.prefix)} Sword`, cat:'Combat', icon:getIcon(`${t.prefix}_sword`), grid:[null,m,null, null,m,null, null,s,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_pickaxe`, name:`${formatName(t.prefix)} Pickaxe`, cat:'Tools', icon:getIcon(`${t.prefix}_pickaxe`), grid:[m,m,m, null,s,null, null,s,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_axe`, name:`${formatName(t.prefix)} Axe`, cat:'Tools', icon:getIcon(`${t.prefix}_axe`), grid:[m,m,null, m,s,null, null,s,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_shovel`, name:`${formatName(t.prefix)} Shovel`, cat:'Tools', icon:getIcon(`${t.prefix}_shovel`), grid:[null,m,null, null,s,null, null,s,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_hoe`, name:`${formatName(t.prefix)} Hoe`, cat:'Tools', icon:getIcon(`${t.prefix}_hoe`), grid:[m,m,null, null,s,null, null,s,null], count:1 });
 });
 
-// ================== LOGIC UI ==================
-const CATS = ['All','Build','Combat','Misc'];
+const armorMats = [
+  { prefix: 'leather', mat: I('leather') }, { prefix: 'iron', mat: iron },
+  { prefix: 'golden', mat: gold }, { prefix: 'diamond', mat: I('diamond') }
+];
+armorMats.forEach(t => {
+  let m = t.mat;
+  RECIPES.push({ id:`${t.prefix}_helmet`, name:`${formatName(t.prefix)} Helmet`, cat:'Armor', icon:getIcon(`${t.prefix}_helmet`), grid:[m,m,m, m,null,m, null,null,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_chestplate`, name:`${formatName(t.prefix)} Chestplate`, cat:'Armor', icon:getIcon(`${t.prefix}_chestplate`), grid:[m,null,m, m,m,m, m,m,m], count:1 });
+  RECIPES.push({ id:`${t.prefix}_leggings`, name:`${formatName(t.prefix)} Leggings`, cat:'Armor', icon:getIcon(`${t.prefix}_leggings`), grid:[m,m,m, m,null,m, m,null,m], count:1 });
+  RECIPES.push({ id:`${t.prefix}_boots`, name:`${formatName(t.prefix)} Boots`, cat:'Armor', icon:getIcon(`${t.prefix}_boots`), grid:[null,null,null, m,null,m, m,null,m], count:1 });
+});
+
+const woods = ['oak','spruce','birch','jungle','acacia','dark_oak','mangrove','cherry','crimson','warped'];
+woods.forEach(w => {
+  const plk = I(w + '_planks'); const lg = I(w + (w==='crimson'||w==='warped' ? '_stem' : '_log')); const s = stick;
+  RECIPES.push({id:w+'_planks', name:formatName(w)+' Planks', cat:'Build', icon:BLOCK_URL+w+'_planks.png', grid:[null,null,null, null,lg,null, null,null,null], count:4});
+  RECIPES.push({id:w+'_stairs', name:formatName(w)+' Stairs', cat:'Build', icon:ITEM_URL+w+'_stairs.png', grid:[plk,null,null, plk,plk,null, plk,plk,plk], count:4});
+  RECIPES.push({id:w+'_slab', name:formatName(w)+' Slab', cat:'Build', icon:ITEM_URL+w+'_slab.png', grid:[null,null,null, plk,plk,plk, null,null,null], count:6});
+  RECIPES.push({id:w+'_fence', name:formatName(w)+' Fence', cat:'Build', icon:ITEM_URL+w+'_fence.png', grid:[null,null,null, plk,s,plk, plk,s,plk], count:3});
+  RECIPES.push({id:w+'_fence_gate', name:formatName(w)+' Fence Gate', cat:'Build', icon:ITEM_URL+w+'_fence_gate.png', grid:[null,null,null, s,plk,s, s,plk,s], count:1});
+  RECIPES.push({id:w+'_door', name:formatName(w)+' Door', cat:'Build', icon:ITEM_URL+w+'_door.png', grid:[plk,plk,null, plk,plk,null, plk,plk,null], count:3});
+  RECIPES.push({id:w+'_trapdoor', name:formatName(w)+' Trapdoor', cat:'Build', icon:ITEM_URL+w+'_trapdoor.png', grid:[null,null,null, plk,plk,plk, plk,plk,plk], count:2});
+  if(w !== 'crimson' && w !== 'warped') {
+    RECIPES.push({id:w+'_boat', name:formatName(w)+' Boat', cat:'Misc', icon:ITEM_URL+w+'_boat.png', grid:[null,null,null, plk,null,plk, plk,plk,plk], count:1});
+  }
+});
+
+const materials = [
+  { ing: 'iron_ingot', blk: 'iron_block' }, { ing: 'gold_ingot', blk: 'gold_block' },
+  { ing: 'diamond', blk: 'diamond_block' }, { ing: 'emerald', blk: 'emerald_block' },
+  { ing: 'redstone', blk: 'redstone_block' }, { ing: 'lapis_lazuli', blk: 'lapis_block' },
+  { ing: 'coal', blk: 'coal_block' }, { ing: 'slime_ball', blk: 'slime_block' },
+  { ing: 'wheat', blk: 'hay_block' }
+];
+materials.forEach(m => {
+  let ingItem = I(m.ing); let blkItem = I(m.blk);
+  RECIPES.push({id:m.blk, name:formatName(m.blk), cat:'Build', icon:BLOCK_URL+m.blk+'.png', grid:[ingItem,ingItem,ingItem, ingItem,ingItem,ingItem, ingItem,ingItem,ingItem], count:1});
+  RECIPES.push({id:m.ing+'_from_block', name:formatName(m.ing), cat:'Misc', icon:getIcon(m.ing), grid:[null,null,null, null,blkItem,null, null,null,null], count:9});
+});
+
+// ================== RENDER UI & LOGIC ==================
+const CATS = ['All','Build','Tools','Combat','Armor','Redstone','Food','Misc'];
 let currentCat = 'All';
 let currentSearch = '';
 
@@ -126,9 +183,16 @@ CATS.forEach(cat => {
   const btn = document.createElement('button');
   btn.className = `cat-btn ${cat === 'All' ? 'active' : ''}`;
   btn.textContent = cat;
-  btn.onclick = () => { playClick(); currentCat = cat; document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderGrid(); };
+  btn.onclick = () => {
+    currentCat = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGrid();
+  };
   catContainer.appendChild(btn);
 });
+
+const gridEl = document.getElementById('recipeGrid');
 
 function handleImgError(imgElement, itemId) {
   if(!imgElement.dataset.retried) {
@@ -140,15 +204,20 @@ function handleImgError(imgElement, itemId) {
 }
 
 function renderGrid() {
-  const gridEl = document.getElementById('recipeGrid');
   gridEl.innerHTML = '';
-  const filtered = RECIPES.filter(r => (currentCat === 'All' || r.cat === currentCat) && (!currentSearch || r.name.toLowerCase().includes(currentSearch)));
-
+  const filtered = RECIPES.filter(r => 
+    (currentCat === 'All' || r.cat === currentCat) &&
+    (!currentSearch || r.name.toLowerCase().includes(currentSearch))
+  );
+  if (filtered.length === 0) {
+    gridEl.innerHTML = '<div class="no-results">😢 Không tìm thấy công thức nào</div>';
+    return;
+  }
   filtered.forEach(r => {
     const card = document.createElement('div');
     card.className = 'recipe-card';
-    card.innerHTML = `<img src="${r.icon}" onerror="handleImgError(this, '${r.id}')"><div>${r.name}</div>`;
-    card.onclick = () => { playClick(); showModal(r); };
+    card.innerHTML = `<img src="${r.icon}" onerror="handleImgError(this, '${r.id}')" loading="lazy"><div style="font-weight:700;margin:8px 0 4px;font-size:0.9rem">${r.name}</div><div style="font-size:0.75rem;color:#b8ffd0;">${r.cat}</div>`;
+    card.onclick = () => showModal(r);
     gridEl.appendChild(card);
   });
 }
@@ -163,18 +232,25 @@ function showModal(r) {
   for (let i = 0; i < 9; i++) {
     const slot = document.createElement('div');
     slot.className = 'craft-slot';
-    if (r.grid[i]) slot.innerHTML = `<img src="${r.grid[i].icon}" onerror="handleImgError(this, '${r.grid[i].id}')">`;
+    const item = r.grid[i];
+    if (item) slot.innerHTML = `<img src="${item.icon}" onerror="handleImgError(this, '${item.id}')">`;
     craftGrid.appendChild(slot);
   }
-  const resImg = document.getElementById('resultImg');
-  delete resImg.dataset.retried;
-  resImg.src = r.icon;
+  const resultImg = document.getElementById('resultImg');
+  delete resultImg.dataset.retried; 
+  resultImg.src = r.icon;
+  resultImg.onerror = () => handleImgError(resultImg, r.id);
   document.getElementById('modalOverlay').classList.add('active');
 }
 
-document.getElementById('searchInput').addEventListener('input', e => { currentSearch = e.target.value.toLowerCase(); renderGrid(); });
-document.getElementById('modalClose').onclick = () => { playClick(); document.getElementById('modalOverlay').classList.remove('active'); };
-
+document.getElementById('searchInput').addEventListener('input', e => {
+  currentSearch = e.target.value.toLowerCase().trim();
+  renderGrid();
+});
+document.getElementById('modalClose').onclick = () => document.getElementById('modalOverlay').classList.remove('active');
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target.id === 'modalOverlay') document.getElementById('modalOverlay').classList.remove('active');
+});
 renderGrid();
 </script>
 </body>
