@@ -17,7 +17,6 @@
     html{scroll-behavior:smooth}
     body{font-family:'Quicksand',sans-serif;background:linear-gradient(135deg, var(--bg), #15173a);color:#f0f0ff;min-height:100vh;padding-bottom:50px;}
     
-    /* Header & Search */
     header{text-align:center;padding:40px 20px 20px;background:radial-gradient(circle at top, rgba(68,255,170,0.1) 0%, transparent 70%);}
     header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.2rem,4vw,2.2rem);color:var(--accent);text-shadow:0 5px 15px rgba(255,221,51,0.4);letter-spacing:1px;line-height:1.4;}
     
@@ -25,13 +24,11 @@
     .search-box input{width:100%;max-width:650px;padding:18px 25px;background:rgba(0,0,0,0.5);border:2px solid var(--primary);border-radius:50px;color:#fff;font-size:1.1rem;font-weight:700;outline:none;transition:0.3s;box-shadow:0 0 20px rgba(68,255,170,0.1);}
     .search-box input:focus{box-shadow:0 0 30px rgba(68,255,170,0.3);transform:scale(1.02);}
 
-    /* Categories */
     .categories{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:25px 15px;}
     .cat-btn{padding:10px 22px;background:var(--card-bg);border:2px solid transparent;color:#aaa;border-radius:30px;font-weight:700;cursor:pointer;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
     .cat-btn:hover{color:#fff;background:rgba(68,255,170,0.2);}
     .cat-btn.active{background:var(--primary);color:#000;box-shadow:0 0 15px rgba(68,255,170,0.5);}
 
-    /* Grid layout */
     .recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:16px;padding:0 20px;max-width:1300px;margin:0 auto;}
     .recipe-card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:15px;text-align:center;cursor:pointer;transition:all 0.3s ease;position:relative;overflow:hidden;}
     .recipe-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);transform:translateX(-100%);transition:0.5s;}
@@ -43,7 +40,6 @@
     .recipe-cat{font-size:0.7rem;color:var(--primary);margin-top:5px;font-weight:700;}
     .no-results{grid-column:1/-1;text-align:center;padding:60px;color:#888;font-size:1.2rem;font-weight:700;}
 
-    /* Modal (UI Chế tạo) */
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:1000;opacity:0;transition:opacity 0.3s;}
     .modal-overlay.active{display:flex;opacity:1;}
     .modal{background:var(--modal-bg);border:3px solid var(--accent);border-radius:24px;width:90%;max-width:480px;padding:30px 20px;position:relative;transform:scale(0.8);transition:transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);box-shadow:0 20px 50px rgba(0,0,0,0.5);}
@@ -73,7 +69,7 @@
 
 <div class="search-wrap">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Tìm tên đồ vật (Vd: sword, bed, tnt, mace...)" autocomplete="off"/>
+    <input type="text" id="searchInput" placeholder="Tìm tên đồ vật (Vd: sword, bed, tnt, repeater...)" autocomplete="off"/>
   </div>
 </div>
 
@@ -104,18 +100,17 @@ const URL_WIKI = "https://minecraft.wiki/images/Invicon_";
 
 function getImg(id) { return { id: id, url: URL_ITEM + id + ".png" }; }
 
-// Thuật toán Fix ảnh 3 lớp: Item -> Block -> Wiki -> Barrier
 function smartImageFallback(img, id) {
     let attempts = parseInt(img.dataset.retry || '0');
     if (attempts === 0) {
         img.dataset.retry = '1';
-        img.src = URL_BLOCK + id + ".png"; // Thử tìm trong kho Block
+        img.src = URL_BLOCK + id + ".png";
     } else if (attempts === 1) {
         img.dataset.retry = '2';
         let wikiName = id.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
-        img.src = URL_WIKI + wikiName + ".png"; // Thử tìm trên Wiki
+        img.src = URL_WIKI + wikiName + ".png";
     } else {
-        img.src = "https://minecraft.wiki/images/Invicon_Barrier.png"; // Đầu hàng
+        img.src = "https://minecraft.wiki/images/Invicon_Barrier.png";
     }
 }
 
@@ -123,42 +118,99 @@ function smartImageFallback(img, id) {
 let MASTER_DB = [];
 
 function generateDatabase() {
+    // Nguyên liệu cốt lõi
     const s = getImg('stick');
     const plk = getImg('oak_planks');
     const cob = getImg('cobblestone');
     const iro = getImg('iron_ingot');
     const red = getImg('redstone');
+    const str = getImg('string');
+    const pap = getImg('paper');
+    const sto = getImg('stone'); // Sẽ tự động lấy từ block nhờ Fallback
 
-    // 1. Redstone & Cơ chế đặc biệt
+    // 1. REDSTONE (Full cơ bản & nâng cao)
     MASTER_DB.push(
-        {id:'mace', cat:'Combat', g:[null,null,null, null,getImg('heavy_core'),null, null,getImg('breeze_rod'),null], qty:1},
-        {id:'crafter', cat:'Redstone', g:[iro,iro,iro, iro,getImg('crafting_table'),iro, red,getImg('dropper'),red], qty:1},
-        {id:'tnt', cat:'Combat', g:[getImg('gunpowder'),getImg('sand'),getImg('gunpowder'), getImg('sand'),getImg('gunpowder'),getImg('sand'), getImg('gunpowder'),getImg('sand'),getImg('gunpowder')], qty:1},
+        {id:'redstone_torch', cat:'Redstone', g:[null,null,null, null,red,null, null,s,null], qty:1},
+        {id:'repeater', cat:'Redstone', g:[null,null,null, getImg('redstone_torch'),red,getImg('redstone_torch'), sto,sto,sto], qty:1},
+        {id:'comparator', cat:'Redstone', g:[null,getImg('redstone_torch'),null, getImg('redstone_torch'),getImg('quartz'),getImg('redstone_torch'), sto,sto,sto], qty:1},
         {id:'observer', cat:'Redstone', g:[cob,cob,cob, red,red,getImg('quartz'), cob,cob,cob], qty:1},
         {id:'piston', cat:'Redstone', g:[plk,plk,plk, cob,iro,cob, cob,red,cob], qty:1},
-        {id:'shield', cat:'Combat', g:[plk,iro,plk, plk,plk,plk, null,plk,null], qty:1},
-        {id:'firework_rocket', cat:'Misc', g:[getImg('paper'),null,null, getImg('gunpowder'),null,null, null,null,null], qty:3},
-        {id:'chest', cat:'Build', g:[plk,plk,plk, plk,null,plk, plk,plk,plk], qty:1},
-        {id:'furnace', cat:'Build', g:[cob,cob,cob, cob,null,cob, cob,cob,cob], qty:1}
+        {id:'sticky_piston', cat:'Redstone', g:[null,null,null, null,getImg('slime_ball'),null, null,getImg('piston'),null], qty:1},
+        {id:'dispenser', cat:'Redstone', g:[cob,cob,cob, cob,getImg('bow'),cob, cob,red,cob], qty:1},
+        {id:'dropper', cat:'Redstone', g:[cob,cob,cob, cob,null,cob, cob,red,cob], qty:1},
+        {id:'hopper', cat:'Redstone', g:[iro,null,iro, iro,getImg('chest'),iro, null,iro,null], qty:1},
+        {id:'target', cat:'Redstone', g:[null,red,null, red,getImg('hay_block'),red, null,red,null], qty:1},
+        {id:'redstone_lamp', cat:'Redstone', g:[null,red,null, red,getImg('glowstone'),red, null,red,null], qty:1},
+        {id:'daylight_detector', cat:'Redstone', g:[getImg('glass'),getImg('glass'),getImg('glass'), getImg('quartz'),getImg('quartz'),getImg('quartz'), getImg('oak_slab'),getImg('oak_slab'),getImg('oak_slab')], qty:1},
+        {id:'crafter', cat:'Redstone', g:[iro,iro,iro, iro,getImg('crafting_table'),iro, red,getImg('dropper'),red], qty:1}
     );
 
-    // 2. Generator cho Công cụ & Giáp
-    const mats = [
+    // 2. COMBAT (Vũ khí & Tấn công)
+    MASTER_DB.push(
+        {id:'bow', cat:'Combat', g:[null,s,str, s,null,str, null,s,str], qty:1},
+        {id:'crossbow', cat:'Combat', g:[s,iro,s, str,getImg('tripwire_hook'),str, null,s,null], qty:1},
+        {id:'arrow', cat:'Combat', g:[null,getImg('flint'),null, null,s,null, null,getImg('feather'),null], qty:4},
+        {id:'spectral_arrow', cat:'Combat', g:[null,getImg('glowstone_dust'),null, getImg('glowstone_dust'),getImg('arrow'),getImg('glowstone_dust'), null,getImg('glowstone_dust'),null], qty:2},
+        {id:'shield', cat:'Combat', g:[plk,iro,plk, plk,plk,plk, null,plk,null], qty:1},
+        {id:'tnt', cat:'Combat', g:[getImg('gunpowder'),getImg('sand'),getImg('gunpowder'), getImg('sand'),getImg('gunpowder'),getImg('sand'), getImg('gunpowder'),getImg('sand'),getImg('gunpowder')], qty:1},
+        {id:'mace', cat:'Combat', g:[null,null,null, null,getImg('heavy_core'),null, null,getImg('breeze_rod'),null], qty:1},
+        {id:'end_crystal', cat:'Combat', g:[getImg('glass'),getImg('glass'),getImg('glass'), getImg('glass'),getImg('ender_eye'),getImg('glass'), getImg('glass'),getImg('ghast_tear'),getImg('glass')], qty:1}
+    );
+
+    // 3. MISC & CÔNG CỤ ĐẶC BIỆT (Khác)
+    MASTER_DB.push(
+        {id:'fishing_rod', cat:'Tools', g:[null,null,s, null,s,str, s,null,str], qty:1},
+        {id:'shears', cat:'Tools', g:[null,null,null, iro,null,null, null,iro,null], qty:1},
+        {id:'flint_and_steel', cat:'Tools', g:[null,null,null, iro,null,null, null,getImg('flint'),null], qty:1},
+        {id:'compass', cat:'Tools', g:[null,iro,null, iro,red,iro, null,iro,null], qty:1},
+        {id:'clock', cat:'Tools', g:[null,getImg('gold_ingot'),null, getImg('gold_ingot'),red,getImg('gold_ingot'), null,getImg('gold_ingot'),null], qty:1},
+        {id:'spyglass', cat:'Tools', g:[null,getImg('amethyst_shard'),null, null,getImg('copper_ingot'),null, null,getImg('copper_ingot'),null], qty:1},
+        {id:'bucket', cat:'Misc', g:[null,null,null, iro,null,iro, null,iro,null], qty:1},
+        {id:'paper', cat:'Misc', g:[null,null,null, getImg('sugar_cane'),getImg('sugar_cane'),getImg('sugar_cane'), null,null,null], qty:3},
+        {id:'book', cat:'Misc', g:[pap,pap,null, pap,getImg('leather'),null, null,null,null], qty:1},
+        {id:'anvil', cat:'Misc', g:[getImg('iron_block'),getImg('iron_block'),getImg('iron_block'), null,iro,null, iro,iro,iro], qty:1},
+        {id:'cauldron', cat:'Misc', g:[iro,null,iro, iro,null,iro, iro,iro,iro], qty:1},
+        {id:'minecart', cat:'Misc', g:[null,null,null, iro,null,iro, iro,iro,iro], qty:1},
+        {id:'rail', cat:'Misc', g:[iro,null,iro, iro,s,iro, iro,null,iro], qty:16},
+        {id:'torch', cat:'Misc', g:[null,null,null, null,getImg('coal'),null, null,s,null], qty:4},
+        {id:'chest', cat:'Build', g:[plk,plk,plk, plk,null,plk, plk,plk,plk], qty:1},
+        {id:'furnace', cat:'Build', g:[cob,cob,cob, cob,null,cob, cob,cob,cob], qty:1},
+        {id:'red_bed', cat:'Misc', g:[null,null,null, getImg('red_wool'),getImg('red_wool'),getImg('red_wool'), plk,plk,plk], qty:1}
+    );
+
+    // 4. GENERATOR CÔNG CỤ (Thêm Shovel & Hoe)
+    const toolMats = [
         {prefix:'wooden', mat:plk}, {prefix:'stone', mat:cob},
         {prefix:'iron', mat:iro}, {prefix:'golden', mat:getImg('gold_ingot')},
         {prefix:'diamond', mat:getImg('diamond')}
     ];
-    mats.forEach(m => {
+    toolMats.forEach(m => {
         let mat = m.mat;
         MASTER_DB.push(
             {id:m.prefix+'_sword', cat:'Combat', g:[null,mat,null, null,mat,null, null,s,null], qty:1},
             {id:m.prefix+'_pickaxe', cat:'Tools', g:[mat,mat,mat, null,s,null, null,s,null], qty:1},
             {id:m.prefix+'_axe', cat:'Tools', g:[mat,mat,null, mat,s,null, null,s,null], qty:1},
-            {id:m.prefix+'_chestplate', cat:'Armor', g:[mat,null,mat, mat,mat,mat, mat,mat,mat], qty:1}
+            {id:m.prefix+'_shovel', cat:'Tools', g:[null,mat,null, null,s,null, null,s,null], qty:1},
+            {id:m.prefix+'_hoe', cat:'Tools', g:[mat,mat,null, null,s,null, null,s,null], qty:1}
         );
     });
 
-    // 3. Generator cho Hệ sinh thái gỗ (Chỉ 1 vòng lặp tạo ra hàng trăm công thức)
+    // 5. GENERATOR GIÁP (Full Set: Helmet, Chestplate, Leggings, Boots + Thêm loại Leather)
+    const armorMats = [
+        {prefix:'leather', mat:getImg('leather')}, {prefix:'iron', mat:iro},
+        {prefix:'golden', mat:getImg('gold_ingot')}, {prefix:'diamond', mat:getImg('diamond')}
+    ];
+    armorMats.forEach(m => {
+        let mat = m.mat;
+        MASTER_DB.push(
+            {id:m.prefix+'_helmet', cat:'Armor', g:[mat,mat,mat, mat,null,mat, null,null,null], qty:1},
+            {id:m.prefix+'_chestplate', cat:'Armor', g:[mat,null,mat, mat,mat,mat, mat,mat,mat], qty:1},
+            {id:m.prefix+'_leggings', cat:'Armor', g:[mat,mat,mat, mat,null,mat, mat,null,mat], qty:1},
+            {id:m.prefix+'_boots', cat:'Armor', g:[null,null,null, mat,null,mat, mat,null,mat], qty:1}
+        );
+    });
+
+    // 6. GENERATOR GỖ CƠ BẢN
     const woods = ['oak','spruce','birch','jungle','cherry','mangrove','dark_oak'];
     woods.forEach(w => {
         const wp = getImg(w+'_planks');
@@ -172,12 +224,11 @@ function generateDatabase() {
     });
 }
 
-// ================= RENDER LOGIC (CỰC MƯỢT) =================
+// ================= RENDER LOGIC =================
 let currentCat = 'All';
 const CATS = ['All','Build','Combat','Tools','Armor','Redstone','Misc'];
 const gridEl = document.getElementById('recipeGrid');
 
-// Tạo menu danh mục
 CATS.forEach(c => {
     let btn = document.createElement('button');
     btn.className = 'cat-btn' + (c==='All' ? ' active' : '');
@@ -191,7 +242,6 @@ CATS.forEach(c => {
     document.getElementById('catBox').appendChild(btn);
 });
 
-// Render danh sách (Dùng DocumentFragment để chống Lag)
 function renderGrid() {
     gridEl.innerHTML = '';
     const searchStr = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -210,7 +260,6 @@ function renderGrid() {
     filtered.forEach(r => {
         const card = document.createElement('div');
         card.className = 'recipe-card';
-        // Hiển thị ảnh của vật phẩm đầu tiên trong công thức đại diện (hoặc chính nó)
         card.innerHTML = `
             <img src="${getImg(r.id).url}" onerror="smartImageFallback(this, '${r.id}')" loading="lazy">
             <div class="recipe-name">${r.id.replace(/_/g, ' ')}</div>
@@ -222,15 +271,14 @@ function renderGrid() {
     gridEl.appendChild(fragment);
 }
 
-// ================= XỬ LÝ SỰ KIỆN & CHỐNG LAG TÌM KIẾM =================
-// Kỹ thuật Debounce: Chỉ tìm kiếm khi ngừng gõ 300ms
+// Chống Lag Tìm Kiếm
 let debounceTimer;
 document.getElementById('searchInput').addEventListener('input', () => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(renderGrid, 300);
 });
 
-// Modal Logic
+// Modal UI
 const modalOverlay = document.getElementById('modalOverlay');
 function openModal(r) {
     document.getElementById('mTitle').innerText = r.id.replace(/_/g, ' ').toUpperCase();
@@ -238,7 +286,7 @@ function openModal(r) {
     document.getElementById('mCount').innerText = r.qty > 1 ? r.qty : '';
     
     let resImg = document.getElementById('mResImg');
-    resImg.dataset.retry = "0"; // Reset bộ đếm lỗi
+    resImg.dataset.retry = "0"; 
     resImg.src = getImg(r.id).url;
     resImg.onerror = () => smartImageFallback(resImg, r.id);
 
