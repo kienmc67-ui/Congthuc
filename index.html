@@ -38,12 +38,12 @@ header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.6rem,5vw,2.6r
 
 <header>
   <h1>🛠️ Minecraft Recipes</h1>
-  <p style="color:#b8ffd0;opacity:0.9;">Bedrock 1.21.11 • Ultimate Crafting Guide</p>
+  <p style="color:#b8ffd0;opacity:0.9;">Bedrock 1.21.11 • Comprehensive Crafting</p>
 </header>
 
 <div class="search-wrap">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Tìm công thức... (mace, pickaxe, repeater...)" />
+    <input type="text" id="searchInput" placeholder="Tìm công thức... (mace, shield, boat, observer...)" />
   </div>
 </div>
 
@@ -70,133 +70,127 @@ header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.6rem,5vw,2.6r
 
 <script>
 // ================== NGUỒN ẢNH SIÊU ỔN ĐỊNH ==================
-// Dùng dữ liệu thô (raw textures) từ Misode - Github chuyên cập nhật resource Minecraft
 const ITEM_URL = "https://raw.githubusercontent.com/misode/mcmeta/assets/assets/minecraft/textures/item/";
 const BLOCK_URL = "https://raw.githubusercontent.com/misode/mcmeta/assets/assets/minecraft/textures/block/";
 
-// Hàm lấy icon. Nếu là block sẽ tự fallback qua BLOCK_URL trong lúc render
-function getIcon(id) {
-  return ITEM_URL + id + ".png";
-}
-
-// Hàm format tên hiển thị đẹp (vd: iron_ingot -> Iron Ingot)
-function formatName(id) {
-  return id.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
-
-// Hàm tạo object Item nhanh
+function getIcon(id) { return ITEM_URL + id + ".png"; }
+function formatName(id) { return id.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); }
 const I = id => ({ id: id, icon: getIcon(id), name: formatName(id) });
 
 let RECIPES = [];
 
-// ================== CÁC CÔNG THỨC CƠ BẢN VÀ ĐẶC BIỆT ==================
-
-// 1.21 Items
-RECIPES.push({
-  id:'mace', name:'Mace', cat:'Combat',
-  icon: getIcon('mace'), desc: 'Vũ khí cực mạnh 1.21.11, sát thương tăng theo độ cao rơi.',
-  grid: [null,null,null, null,I('heavy_core'),null, null,I('breeze_rod'),null], count: 1
-});
-
-// Basics
+// ================== CÁC CÔNG THỨC ĐẶC BIỆT / THƯỜNG DÙNG ==================
 const stick = I('stick');
-RECIPES.push({
-  id:'stick', name:'Stick', cat:'Misc',
-  icon: getIcon('stick'), desc: 'Nguyên liệu cơ bản nhất.',
-  grid: [null,I('oak_planks'),null, null,I('oak_planks'),null, null,null,null], count: 4
-});
-RECIPES.push({
-  id:'crafting_table', name:'Crafting Table', cat:'Build',
-  icon: BLOCK_URL + 'crafting_table_top.png', desc: 'Bàn chế tạo.',
-  grid: [null,null,null, null,I('oak_planks'),I('oak_planks'), null,I('oak_planks'),I('oak_planks')], count: 1
-});
-RECIPES.push({
-  id:'furnace', name:'Furnace', cat:'Build',
-  icon: BLOCK_URL + 'furnace_front.png', desc: 'Lò nung.',
-  grid: [I('cobblestone'),I('cobblestone'),I('cobblestone'), I('cobblestone'),null,I('cobblestone'), I('cobblestone'),I('cobblestone'),I('cobblestone')], count: 1
-});
+const cobble = I('cobblestone');
+const iron = I('iron_ingot');
+const gold = I('gold_ingot');
+const redstone = I('redstone');
+const planks = I('oak_planks');
 
-// Redstone
-RECIPES.push({
-  id:'repeater', name:'Redstone Repeater', cat:'Redstone',
-  icon: ITEM_URL + 'repeater.png', desc: 'Bộ lặp tín hiệu.',
-  grid: [null,null,null, I('redstone_torch'),I('redstone'),I('redstone_torch'), I('stone'),I('stone'),I('stone')], count: 1
-});
-RECIPES.push({
-  id:'comparator', name:'Redstone Comparator', cat:'Redstone',
-  icon: ITEM_URL + 'comparator.png', desc: 'Bộ so sánh tín hiệu.',
-  grid: [null,I('redstone_torch'),null, I('redstone_torch'),I('quartz'),I('redstone_torch'), I('stone'),I('stone'),I('stone')], count: 1
-});
-RECIPES.push({
-  id:'piston', name:'Piston', cat:'Redstone',
-  icon: BLOCK_URL + 'piston_side.png', desc: 'Khối đẩy.',
-  grid: [I('oak_planks'),I('oak_planks'),I('oak_planks'), I('cobblestone'),I('iron_ingot'),I('cobblestone'), I('cobblestone'),I('redstone'),I('cobblestone')], count: 1
-});
-RECIPES.push({
-  id:'tnt', name:'TNT', cat:'Redstone',
-  icon: BLOCK_URL + 'tnt_side.png', desc: 'Thuốc nổ.',
-  grid: [I('gunpowder'),I('sand'),I('gunpowder'), I('sand'),I('gunpowder'),I('sand'), I('gunpowder'),I('sand'),I('gunpowder')], count: 1
-});
+// Items cốt lõi 1.21 & Cơ bản
+RECIPES.push({ id:'mace', name:'Mace', cat:'Combat', icon: getIcon('mace'), desc: 'Vũ khí mạnh mẽ từ 1.21.', grid: [null,null,null, null,I('heavy_core'),null, null,I('breeze_rod'),null], count: 1 });
+RECIPES.push({ id:'stick', name:'Stick', cat:'Misc', icon: getIcon('stick'), desc: 'Que gỗ cơ bản.', grid: [null,planks,null, null,planks,null, null,null,null], count: 4 });
+RECIPES.push({ id:'crafting_table', name:'Crafting Table', cat:'Build', icon: BLOCK_URL + 'crafting_table_top.png', desc: 'Bàn chế tạo.', grid: [null,null,null, null,planks,planks, null,planks,planks], count: 1 });
+RECIPES.push({ id:'furnace', name:'Furnace', cat:'Build', icon: BLOCK_URL + 'furnace_front.png', desc: 'Lò nung.', grid: [cobble,cobble,cobble, cobble,null,cobble, cobble,cobble,cobble], count: 1 });
+RECIPES.push({ id:'chest', name:'Chest', cat:'Build', icon: BLOCK_URL + 'chest_front.png', desc: 'Rương chứa đồ.', grid: [planks,planks,planks, planks,null,planks, planks,planks,planks], count: 1 });
 
-// ================== HỆ THỐNG TỰ ĐỘNG SINH CÔNG THỨC (GENERATOR) ==================
+// Dụng cụ / Misc
+RECIPES.push({ id:'shield', name:'Shield', cat:'Combat', icon: getIcon('shield_base'), desc: 'Khiên bảo vệ.', grid: [planks,iron,planks, planks,planks,planks, null,planks,null], count: 1 });
+RECIPES.push({ id:'bow', name:'Bow', cat:'Combat', icon: getIcon('bow'), desc: 'Cung tên.', grid: [null,stick,I('string'), stick,null,I('string'), null,stick,I('string')], count: 1 });
+RECIPES.push({ id:'crossbow', name:'Crossbow', cat:'Combat', icon: getIcon('crossbow_standby'), desc: 'Nỏ.', grid: [stick,iron,stick, I('string'),I('tripwire_hook'),I('string'), null,stick,null], count: 1 });
+RECIPES.push({ id:'fishing_rod', name:'Fishing Rod', cat:'Tools', icon: getIcon('fishing_rod'), desc: 'Cần câu.', grid: [null,null,stick, null,stick,I('string'), stick,null,I('string')], count: 1 });
+RECIPES.push({ id:'bucket', name:'Bucket', cat:'Misc', icon: getIcon('bucket'), desc: 'Xô sắt.', grid: [null,null,null, iron,null,iron, null,iron,null], count: 1 });
+RECIPES.push({ id:'shears', name:'Shears', cat:'Tools', icon: getIcon('shears'), desc: 'Kéo cắt lông cừu.', grid: [null,null,null, iron,null,null, null,iron,null], count: 1 });
+RECIPES.push({ id:'flint_and_steel', name:'Flint and Steel', cat:'Tools', icon: getIcon('flint_and_steel'), desc: 'Bật lửa.', grid: [null,null,null, iron,null,null, null,I('flint'),null], count: 1 });
+RECIPES.push({ id:'compass', name:'Compass', cat:'Misc', icon: getIcon('compass_16'), desc: 'La bàn.', grid: [null,iron,null, iron,redstone,iron, null,iron,null], count: 1 });
+RECIPES.push({ id:'clock', name:'Clock', cat:'Misc', icon: getIcon('clock_16'), desc: 'Đồng hồ.', grid: [null,gold,null, gold,redstone,gold, null,gold,null], count: 1 });
+RECIPES.push({ id:'paper', name:'Paper', cat:'Misc', icon: getIcon('paper'), desc: 'Giấy.', grid: [null,null,null, I('sugar_cane'),I('sugar_cane'),I('sugar_cane'), null,null,null], count: 3 });
+RECIPES.push({ id:'book', name:'Book', cat:'Misc', icon: getIcon('book'), desc: 'Sách.', grid: [I('paper'),I('paper'),null, I('paper'),I('leather'),null, null,null,null], count: 1 });
 
-// 1. Tự động sinh Tools & Weapons cho mọi chất liệu
-const materials = [
-  { prefix: 'wooden', mat: I('oak_planks') },
-  { prefix: 'stone', mat: I('cobblestone') },
-  { prefix: 'iron', mat: I('iron_ingot') },
-  { prefix: 'golden', mat: I('gold_ingot') },
-  { prefix: 'diamond', mat: I('diamond') }
+// Redstone nâng cao
+RECIPES.push({ id:'observer', name:'Observer', cat:'Redstone', icon: BLOCK_URL + 'observer_front.png', desc: 'Khối theo dõi.', grid: [cobble,cobble,cobble, redstone,redstone,I('quartz'), cobble,cobble,cobble], count: 1 });
+RECIPES.push({ id:'hopper', name:'Hopper', cat:'Redstone', icon: ITEM_URL + 'hopper.png', desc: 'Phễu.', grid: [iron,null,iron, iron,I('chest'),iron, null,iron,null], count: 1 });
+RECIPES.push({ id:'dispenser', name:'Dispenser', cat:'Redstone', icon: BLOCK_URL + 'dispenser_front.png', desc: 'Máy phân phát.', grid: [cobble,cobble,cobble, cobble,I('bow'),cobble, cobble,redstone,cobble], count: 1 });
+RECIPES.push({ id:'dropper', name:'Dropper', cat:'Redstone', icon: BLOCK_URL + 'dropper_front.png', desc: 'Máy thả.', grid: [cobble,cobble,cobble, cobble,null,cobble, cobble,redstone,cobble], count: 1 });
+RECIPES.push({ id:'piston', name:'Piston', cat:'Redstone', icon: BLOCK_URL + 'piston_side.png', desc: 'Piston.', grid: [planks,planks,planks, cobble,iron,cobble, cobble,redstone,cobble], count: 1 });
+RECIPES.push({ id:'sticky_piston', name:'Sticky Piston', cat:'Redstone', icon: BLOCK_URL + 'piston_top_sticky.png', desc: 'Piston dính.', grid: [null,null,null, null,I('slime_ball'),null, null,I('piston'),null], count: 1 });
+
+// Đồ ăn
+RECIPES.push({ id:'bread', name:'Bread', cat:'Food', icon: getIcon('bread'), desc: 'Bánh mì.', grid: [null,null,null, I('wheat'),I('wheat'),I('wheat'), null,null,null], count: 1 });
+RECIPES.push({ id:'golden_apple', name:'Golden Apple', cat:'Food', icon: getIcon('golden_apple'), desc: 'Táo vàng.', grid: [gold,gold,gold, gold,I('apple'),gold, gold,gold,gold], count: 1 });
+RECIPES.push({ id:'cake', name:'Cake', cat:'Food', icon: getIcon('cake'), desc: 'Bánh kem.', grid: [I('milk_bucket'),I('milk_bucket'),I('milk_bucket'), I('sugar'),I('egg'),I('sugar'), I('wheat'),I('wheat'),I('wheat')], count: 1 });
+
+// ================== HỆ THỐNG TỰ ĐỘNG SINH (GENERATOR) ==================
+
+// 1. Tự động sinh Tools & Armor
+const toolMats = [
+  { prefix: 'wooden', mat: planks }, { prefix: 'stone', mat: cobble },
+  { prefix: 'iron', mat: iron }, { prefix: 'golden', mat: gold }, { prefix: 'diamond', mat: I('diamond') }
 ];
-
-materials.forEach(t => {
-  let m = t.mat;
-  let s = stick;
-  // Sword
-  RECIPES.push({ id:`${t.prefix}_sword`, name:`${formatName(t.prefix)} Sword`, cat:'Combat', icon:getIcon(`${t.prefix}_sword`), desc:`Kiếm ${t.prefix}.`, grid:[null,m,null, null,m,null, null,s,null], count:1 });
-  // Pickaxe
-  RECIPES.push({ id:`${t.prefix}_pickaxe`, name:`${formatName(t.prefix)} Pickaxe`, cat:'Tools', icon:getIcon(`${t.prefix}_pickaxe`), desc:`Cúp ${t.prefix}.`, grid:[m,m,m, null,s,null, null,s,null], count:1 });
-  // Axe
-  RECIPES.push({ id:`${t.prefix}_axe`, name:`${formatName(t.prefix)} Axe`, cat:'Tools', icon:getIcon(`${t.prefix}_axe`), desc:`Rìu ${t.prefix}.`, grid:[m,m,null, m,s,null, null,s,null], count:1 });
-  // Shovel
-  RECIPES.push({ id:`${t.prefix}_shovel`, name:`${formatName(t.prefix)} Shovel`, cat:'Tools', icon:getIcon(`${t.prefix}_shovel`), desc:`Xẻng ${t.prefix}.`, grid:[null,m,null, null,s,null, null,s,null], count:1 });
-  // Hoe
-  RECIPES.push({ id:`${t.prefix}_hoe`, name:`${formatName(t.prefix)} Hoe`, cat:'Tools', icon:getIcon(`${t.prefix}_hoe`), desc:`Cuốc ${t.prefix}.`, grid:[m,m,null, null,s,null, null,s,null], count:1 });
+toolMats.forEach(t => {
+  let m = t.mat, s = stick;
+  RECIPES.push({ id:`${t.prefix}_sword`, name:`${formatName(t.prefix)} Sword`, cat:'Combat', icon:getIcon(`${t.prefix}_sword`), grid:[null,m,null, null,m,null, null,s,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_pickaxe`, name:`${formatName(t.prefix)} Pickaxe`, cat:'Tools', icon:getIcon(`${t.prefix}_pickaxe`), grid:[m,m,m, null,s,null, null,s,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_axe`, name:`${formatName(t.prefix)} Axe`, cat:'Tools', icon:getIcon(`${t.prefix}_axe`), grid:[m,m,null, m,s,null, null,s,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_shovel`, name:`${formatName(t.prefix)} Shovel`, cat:'Tools', icon:getIcon(`${t.prefix}_shovel`), grid:[null,m,null, null,s,null, null,s,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_hoe`, name:`${formatName(t.prefix)} Hoe`, cat:'Tools', icon:getIcon(`${t.prefix}_hoe`), grid:[m,m,null, null,s,null, null,s,null], count:1 });
 });
 
-// 2. Tự động sinh Armor
-const armorMaterials = [
-  { prefix: 'leather', mat: I('leather') },
-  { prefix: 'iron', mat: I('iron_ingot') },
-  { prefix: 'golden', mat: I('gold_ingot') },
-  { prefix: 'diamond', mat: I('diamond') }
+const armorMats = [
+  { prefix: 'leather', mat: I('leather') }, { prefix: 'iron', mat: iron },
+  { prefix: 'golden', mat: gold }, { prefix: 'diamond', mat: I('diamond') }
 ];
-
-armorMaterials.forEach(t => {
+armorMats.forEach(t => {
   let m = t.mat;
-  // Helmet
-  RECIPES.push({ id:`${t.prefix}_helmet`, name:`${formatName(t.prefix)} Helmet`, cat:'Armor', icon:getIcon(`${t.prefix}_helmet`), desc:`Mũ ${t.prefix}.`, grid:[m,m,m, m,null,m, null,null,null], count:1 });
-  // Chestplate
-  RECIPES.push({ id:`${t.prefix}_chestplate`, name:`${formatName(t.prefix)} Chestplate`, cat:'Armor', icon:getIcon(`${t.prefix}_chestplate`), desc:`Áo giáp ${t.prefix}.`, grid:[m,null,m, m,m,m, m,m,m], count:1 });
-  // Leggings
-  RECIPES.push({ id:`${t.prefix}_leggings`, name:`${formatName(t.prefix)} Leggings`, cat:'Armor', icon:getIcon(`${t.prefix}_leggings`), desc:`Quần ${t.prefix}.`, grid:[m,m,m, m,null,m, m,null,m], count:1 });
-  // Boots
-  RECIPES.push({ id:`${t.prefix}_boots`, name:`${formatName(t.prefix)} Boots`, cat:'Armor', icon:getIcon(`${t.prefix}_boots`), desc:`Giày ${t.prefix}.`, grid:[null,null,null, m,null,m, m,null,m], count:1 });
+  RECIPES.push({ id:`${t.prefix}_helmet`, name:`${formatName(t.prefix)} Helmet`, cat:'Armor', icon:getIcon(`${t.prefix}_helmet`), grid:[m,m,m, m,null,m, null,null,null], count:1 });
+  RECIPES.push({ id:`${t.prefix}_chestplate`, name:`${formatName(t.prefix)} Chestplate`, cat:'Armor', icon:getIcon(`${t.prefix}_chestplate`), grid:[m,null,m, m,m,m, m,m,m], count:1 });
+  RECIPES.push({ id:`${t.prefix}_leggings`, name:`${formatName(t.prefix)} Leggings`, cat:'Armor', icon:getIcon(`${t.prefix}_leggings`), grid:[m,m,m, m,null,m, m,null,m], count:1 });
+  RECIPES.push({ id:`${t.prefix}_boots`, name:`${formatName(t.prefix)} Boots`, cat:'Armor', icon:getIcon(`${t.prefix}_boots`), grid:[null,null,null, m,null,m, m,null,m], count:1 });
 });
 
-// 3. Tự động sinh đồ Gỗ (Cửa, Cửa sập...)
-const woods = ['oak','spruce','birch','jungle','acacia','dark_oak','mangrove','cherry'];
+// 2. Tự động sinh Gia đình Đồ Gỗ (Đủ các loại gỗ)
+const woods = ['oak','spruce','birch','jungle','acacia','dark_oak','mangrove','cherry','crimson','warped'];
 woods.forEach(w => {
-  const plk = I(w + '_planks');
-  const lg = I(w + '_log');
-  RECIPES.push({id:w+'_planks', name:formatName(w)+' Planks', cat:'Build', icon:BLOCK_URL+w+'_planks.png', desc:'Ván gỗ.', grid:[null,null,null, null,lg,null, null,null,null], count:4});
-  RECIPES.push({id:w+'_door', name:formatName(w)+' Door', cat:'Build', icon:ITEM_URL+w+'_door.png', desc:'Cửa gỗ.', grid:[plk,plk,null, plk,plk,null, plk,plk,null], count:3});
+  const plk = I(w + '_planks'); const lg = I(w + (w==='crimson'||w==='warped' ? '_stem' : '_log')); const s = stick;
+  // Planks
+  RECIPES.push({id:w+'_planks', name:formatName(w)+' Planks', cat:'Build', icon:BLOCK_URL+w+'_planks.png', grid:[null,null,null, null,lg,null, null,null,null], count:4});
+  // Stairs
+  RECIPES.push({id:w+'_stairs', name:formatName(w)+' Stairs', cat:'Build', icon:ITEM_URL+w+'_stairs.png', grid:[plk,null,null, plk,plk,null, plk,plk,plk], count:4});
+  // Slabs
+  RECIPES.push({id:w+'_slab', name:formatName(w)+' Slab', cat:'Build', icon:ITEM_URL+w+'_slab.png', grid:[null,null,null, plk,plk,plk, null,null,null], count:6});
+  // Fence
+  RECIPES.push({id:w+'_fence', name:formatName(w)+' Fence', cat:'Build', icon:ITEM_URL+w+'_fence.png', grid:[null,null,null, plk,s,plk, plk,s,plk], count:3});
+  // Fence Gate
+  RECIPES.push({id:w+'_fence_gate', name:formatName(w)+' Fence Gate', cat:'Build', icon:ITEM_URL+w+'_fence_gate.png', grid:[null,null,null, s,plk,s, s,plk,s], count:1});
+  // Door
+  RECIPES.push({id:w+'_door', name:formatName(w)+' Door', cat:'Build', icon:ITEM_URL+w+'_door.png', grid:[plk,plk,null, plk,plk,null, plk,plk,null], count:3});
+  // Trapdoor
+  RECIPES.push({id:w+'_trapdoor', name:formatName(w)+' Trapdoor', cat:'Build', icon:ITEM_URL+w+'_trapdoor.png', grid:[null,null,null, plk,plk,plk, plk,plk,plk], count:2});
+  // Boat (trừ nether woods)
+  if(w !== 'crimson' && w !== 'warped') {
+    RECIPES.push({id:w+'_boat', name:formatName(w)+' Boat', cat:'Misc', icon:ITEM_URL+w+'_boat.png', grid:[null,null,null, plk,null,plk, plk,plk,plk], count:1});
+  }
 });
 
+// 3. Tự động sinh Nén/Rã Khối (Blocks)
+const materials = [
+  { ing: 'iron_ingot', blk: 'iron_block' }, { ing: 'gold_ingot', blk: 'gold_block' },
+  { ing: 'diamond', blk: 'diamond_block' }, { ing: 'emerald', blk: 'emerald_block' },
+  { ing: 'redstone', blk: 'redstone_block' }, { ing: 'lapis_lazuli', blk: 'lapis_block' },
+  { ing: 'coal', blk: 'coal_block' }, { ing: 'slime_ball', blk: 'slime_block' },
+  { ing: 'wheat', blk: 'hay_block' }
+];
+materials.forEach(m => {
+  let ingItem = I(m.ing); let blkItem = I(m.blk);
+  // Nén
+  RECIPES.push({id:m.blk, name:formatName(m.blk), cat:'Build', icon:BLOCK_URL+m.blk+'.png', grid:[ingItem,ingItem,ingItem, ingItem,ingItem,ingItem, ingItem,ingItem,ingItem], count:1});
+  // Rã
+  RECIPES.push({id:m.ing+'_from_block', name:formatName(m.ing), cat:'Misc', icon:getIcon(m.ing), grid:[null,null,null, null,blkItem,null, null,null,null], count:9});
+});
 
 // ================== RENDER UI & LOGIC ==================
 
-const CATS = ['All','Build','Tools','Combat','Armor','Redstone','Misc'];
+const CATS = ['All','Build','Tools','Combat','Armor','Redstone','Food','Misc'];
 let currentCat = 'All';
 let currentSearch = '';
 
@@ -216,13 +210,11 @@ CATS.forEach(cat => {
 
 const gridEl = document.getElementById('recipeGrid');
 
-// Hàm xử lý lỗi ảnh: Nếu link ITEM bị lỗi, tự động đổi sang link BLOCK
 function handleImgError(imgElement, itemId) {
   if(!imgElement.dataset.retried) {
     imgElement.dataset.retried = "true";
-    imgElement.src = BLOCK_URL + itemId + ".png"; // Chuyển sang tìm trong thư mục block
+    imgElement.src = BLOCK_URL + itemId + ".png"; 
   } else {
-    // Nếu cả item và block đều không có, hiện hình Barrier
     imgElement.src = ITEM_URL + "barrier.png"; 
   }
 }
@@ -272,14 +264,13 @@ function showModal(r) {
   }
 
   const resultImg = document.getElementById('resultImg');
-  delete resultImg.dataset.retried; // Xóa cờ lỗi để load lại từ đầu
+  delete resultImg.dataset.retried; 
   resultImg.src = r.icon;
   resultImg.onerror = () => handleImgError(resultImg, r.id);
 
   document.getElementById('modalOverlay').classList.add('active');
 }
 
-// Xử lý Search & Close
 document.getElementById('searchInput').addEventListener('input', e => {
   currentSearch = e.target.value.toLowerCase().trim();
   renderGrid();
