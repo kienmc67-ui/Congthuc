@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🛠️ Minecraft Crafting Recipes - Cute • Xịn xò • Rõ ràng</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #ffdd33;
+    --gold-soft: #ffe97a;
+    --green: #aaffaa;
+    --green-soft: #d4ffd4;
+    --bg-1: #0a0a1f;
+    --bg-2: #1f2a44;
+    --bg-3: #2a3658;
+    --card: rgba(30, 40, 70, 0.85);
+    --card-hover: rgba(50, 65, 100, 0.95);
+    --wood: #8b5a2b;
+    --wood-light: #c08850;
+    --wood-dark: #5c3a1c;
+    --slot: #3a4660;
+    --slot-bg: #1a1f30;
+    --text: #f0f0f5;
+    --muted: #a0aac0;
+  }
+  html, body {
+    font-family: 'Segoe UI', 'Quicksand', 'Roboto', sans-serif;
+    background: linear-gradient(160deg, #0a0a1f 0%, #1f2a44 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(170,255,170,0.06), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(255,221,51,0.06), transparent 40%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 40px 20px 16px;
+  }
+  header h1 {
+    font-size: clamp(26px, 5vw, 44px);
+    color: var(--gold);
+    text-shadow: 0 0 18px rgba(255,221,51,0.5), 3px 3px 0 #000;
+    letter-spacing: 1px;
+    font-weight: 800;
+    animation: bob 3s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+  header p {
+    color: var(--green);
+    margin-top: 8px;
+    font-size: clamp(13px, 1.6vw, 16px);
+    font-weight: 500;
+  }
+
+  /* ---------- Search ---------- */
+  .search-wrap {
+    position: relative; z-index: 1;
+    max-width: 680px;
+    margin: 24px auto 16px;
+    padding: 0 16px;
+  }
+  .search-box {
+    width: 100%;
+    padding: 16px 22px;
+    font-size: 16px;
+    background: var(--card);
+    border: 2px solid rgba(255,221,51,0.3);
+    border-radius: 50px;
+    color: var(--text);
+    outline: none;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+  }
+  .search-box::placeholder { color: var(--muted); }
+  .search-box:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 25px rgba(255,221,51,0.4), inset 0 0 15px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+  }
+
+  /* ---------- Categories ---------- */
+  .categories {
+    position: relative; z-index: 1;
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 8px; padding: 8px 16px 24px; max-width: 1200px; margin: 0 auto;
+  }
+  .cat-btn {
+    padding: 9px 18px;
+    border-radius: 50px;
+    background: var(--card);
+    color: var(--text);
+    border: 2px solid rgba(255,221,51,0.25);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+  }
+  .cat-btn:hover {
+    background: var(--card-hover);
+    border-color: var(--gold);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(255,221,51,0.3);
+  }
+  .cat-btn.active {
+    background: linear-gradient(135deg, var(--gold), #ffb347);
+    color: #1a1a1a;
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(255,221,51,0.6);
+  }
+
+  /* ---------- Grid ---------- */
+  .grid {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 8px 16px 60px;
+  }
+  .card {
+    background: var(--card);
+    border: 2px solid rgba(255,221,51,0.2);
+    border-radius: 16px;
+    padding: 18px 10px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    backdrop-filter: blur(6px);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at center, rgba(255,221,51,0.15), transparent 70%);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .card:hover {
+    transform: translateY(-6px) scale(1.06);
+    border-color: var(--gold);
+    box-shadow: 0 12px 28px rgba(255,221,51,0.3);
+  }
+  .card:hover::before { opacity: 1; }
+  .card .img {
+    width: 72px; height: 72px;
+    margin: 0 auto 10px;
+    background: linear-gradient(135deg, var(--bg-3), var(--bg-2));
+    border: 2px solid var(--slot-bg);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    image-rendering: pixelated;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+    position: relative; z-index: 1;
+  }
+  .card .name {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    line-height: 1.3; position: relative; z-index: 1;
+  }
+  .card .cat {
+    font-size: 10px; color: var(--green);
+    margin-top: 4px; opacity: 0.85; position: relative; z-index: 1;
+  }
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center; padding: 50px 20px; color: var(--muted);
+    font-size: 17px;
+  }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 100; padding: 16px;
+    animation: fadeIn 0.25s ease;
+  }
+  .modal-overlay.active { display: flex; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes pop {
+    from{transform:scale(0.85) translateY(20px); opacity:0}
+    to{transform:scale(1) translateY(0); opacity:1}
+  }
+
+  .modal {
+    background: linear-gradient(160deg, var(--bg-3), var(--bg-2));
+    border: 5px solid var(--wood);
+    border-radius: 20px;
+    max-width: 520px; width: 100%;
+    padding: 30px 22px 26px;
+    position: relative;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.7),
+      0 0 50px rgba(255,221,51,0.3),
+      inset 0 0 0 2px var(--wood-dark);
+    animation: pop 0.35s cubic-bezier(.4,0,.2,1);
+    max-height: 92vh; overflow-y: auto;
+  }
+  .modal h2 {
+    color: var(--gold);
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 6px;
+    text-shadow: 0 0 14px rgba(255,221,51,0.6), 2px 2px 0 #000;
+  }
+  .modal .desc {
+    text-align: center; color: var(--green-soft);
+    font-size: 13px; margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  .close-btn {
+    position: absolute; top: 10px; right: 14px;
+    background: transparent; border: none;
+    color: var(--gold);
+    font-size: 36px; font-weight: bold;
+    cursor: pointer; line-height: 1;
+    transition: transform 0.25s ease;
+    text-shadow: 0 0 10px rgba(255,221,51,0.7);
+  }
+  .close-btn:hover { transform: rotate(90deg) scale(1.25); }
+
+  /* Music toggle inside modal */
+  .music-btn {
+    position: absolute; top: 14px; left: 14px;
+    background: rgba(0,0,0,0.4);
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  .music-btn:hover { transform: scale(1.15); box-shadow: 0 0 12px rgba(255,221,51,0.5); }
+
+  /* Crafting area */
+  .craft-area {
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; flex-wrap: wrap;
+    margin: 18px 0 8px;
+  }
+  .craft-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 68px);
+    grid-template-rows: repeat(3, 68px);
+    gap: 5px;
+    background: var(--wood);
+    padding: 10px;
+    border-radius: 12px;
+    border: 4px solid var(--wood-dark);
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.5), 0 4px 14px rgba(0,0,0,0.5);
+  }
+  .slot {
+    background: var(--slot);
+    border: 2px solid var(--slot-bg);
+    border-radius: 6px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: #fff;
+    text-align: center;
+    padding: 3px;
+    line-height: 1.05;
+    word-break: break-word;
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,0.1), inset -1px -1px 0 rgba(0,0,0,0.4);
+    transition: all 0.2s ease;
+    cursor: default;
+  }
+  .slot.empty-slot { background: #2c3650; opacity: 0.55; }
+  .slot.filled {
+    background: linear-gradient(135deg, #5a6d8f, #45556e);
+    box-shadow: inset 0 0 8px rgba(255,221,51,0.25), inset 1px 1px 0 rgba(255,255,255,0.15);
+  }
+  .slot.filled:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 14px rgba(255,221,51,0.6), inset 0 0 8px rgba(255,221,51,0.4);
+    z-index: 5;
+  }
+  .slot .ico { font-size: 26px; line-height: 1; }
+  .slot .lbl {
+    font-size: 9px; margin-top: 3px;
+    font-weight: 600;
+    color: var(--gold-soft);
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  .arrow {
+    font-size: 36px; color: var(--gold);
+    text-shadow: 0 0 12px rgba(255,221,51,0.7);
+    animation: arrowPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes arrowPulse {
+    0%,100%{transform:translateX(0); opacity:0.85}
+    50%{transform:translateX(5px); opacity:1}
+  }
+
+  .result-slot {
+    width: 84px; height: 84px;
+    background: linear-gradient(135deg, var(--bg-3), var(--bg-2));
+    border: 3px solid var(--gold);
+    border-radius: 12px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    box-shadow: 0 0 25px rgba(255,221,51,0.5);
+    position: relative;
+    padding: 4px; text-align: center;
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%,100%{box-shadow:0 0 22px rgba(255,221,51,0.45)}
+    50%{box-shadow:0 0 38px rgba(255,221,51,0.75)}
+  }
+  .result-slot .r-icon { font-size: 34px; }
+  .result-slot .r-count {
+    position: absolute; bottom: 4px; right: 7px;
+    font-size: 17px; font-weight: bold;
+    color: #fff; text-shadow: 1px 1px 0 #000, 0 0 6px var(--gold);
+  }
+  .result-name {
+    text-align: center;
+    color: var(--gold);
+    font-weight: 700;
+    margin-top: 14px;
+    font-size: 18px;
+    text-shadow: 0 0 10px rgba(255,221,51,0.5);
+  }
+
+  /* Sound toggle */
+  .sound-toggle {
+    position: fixed; top: 16px; right: 16px;
+    background: var(--card);
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 50;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .sound-toggle:hover { transform: scale(1.1); box-shadow: 0 0 18px rgba(255,221,51,0.5); }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-1); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--gold), #c99a00);
+    border-radius: 10px;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 8px 12px 50px; }
+    .card { padding: 14px 8px 10px; border-radius: 14px; }
+    .card .img { width: 64px; height: 64px; font-size: 30px; }
+    .card .name { font-size: 12px; }
+    .craft-grid { grid-template-columns: repeat(3, 56px); grid-template-rows: repeat(3, 56px); padding: 7px; gap: 4px; }
+    .slot .ico { font-size: 22px; }
+    .slot .lbl { font-size: 8px; }
+    .modal h2 { font-size: 22px; }
+    .modal { padding: 26px 16px 22px; }
+    .cat-btn { padding: 8px 14px; font-size: 12px; }
+    .arrow { font-size: 28px; }
+    .result-slot { width: 72px; height: 72px; }
+    .result-slot .r-icon { font-size: 28px; }
+    .sound-toggle { width: 38px; height: 38px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<button class="sound-toggle" id="soundToggle" title="Bật/Tắt âm thanh">🔊</button>
+
+<header>
+  <h1>🛠️ Minecraft Crafting Recipes</h1>
+  <p>✨ Tất cả công thức chế tạo – Cute • Xịn xò • Rõ ràng ✨</p>
+</header>
+
+<div class="search-wrap">
+  <input type="text" id="search" class="search-box"
+    placeholder="🔍 Tìm vật phẩm... (diamond sword, bread, netherite pickaxe, mace...)" />
+</div>
+
+<div class="categories" id="categories"></div>
+
+<div class="grid" id="grid"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="music-btn" id="musicBtn" title="Tắt/Bật nhạc nền">🎵</button>
+    <button class="close-btn" id="closeBtn">×</button>
+    <h2 id="m-title"></h2>
+    <p class="desc" id="m-desc"></p>
+    <div class="craft-area">
+      <div class="craft-grid" id="m-grid"></div>
+      <div class="arrow">➜</div>
+      <div class="result-slot">
+        <div class="r-icon" id="m-ricon"></div>
+        <div class="r-count" id="m-rcount"></div>
+      </div>
+    </div>
+    <div class="result-name" id="m-rname"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   🎵 SOUND SYSTEM (WebAudio - không cần file ngoài, chạy offline)
+   - sndHover: tiếng "tick" nhẹ khi hover
+   - sndOpen: tiếng mở crafting (gỗ + pickup)
+   - sndClose: tiếng đóng nhẹ
+   - bgMusic: nhạc nền chill kiểu Minecraft (3 nốt loop, volume thấp)
+   ============================================================ */
+let soundOn = true;
+let musicOn = true;
+let audioCtx = null;
+function getCtx(){
+  if(!audioCtx){
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e){ return null; }
+  }
+  return audioCtx;
+}
+function tone(freq, dur=0.08, type='sine', vol=0.15, when=0){
+  if(!soundOn) return;
+  const ctx = getCtx(); if(!ctx) return;
+  const t0 = ctx.currentTime + when;
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(vol, t0 + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(t0); o.stop(t0 + dur + 0.02);
+}
+function sndHover(){ tone(880, 0.05, 'square', 0.04); }
+function sndOpen(){
+  // wooden button + pickup
+  tone(330, 0.08, 'square', 0.12);
+  tone(660, 0.10, 'sine', 0.10, 0.05);
+  tone(990, 0.12, 'triangle', 0.08, 0.10);
+}
+function sndClose(){
+  tone(440, 0.08, 'sine', 0.10);
+  tone(220, 0.08, 'sine', 0.08, 0.05);
+}
+function sndClick(){ tone(550, 0.05, 'square', 0.08); }
+
+/* ---------- Nhạc nền chill (Minecraft-style ambient pad) ----------
+   Tạo sequence các nốt nhẹ nhàng lặp lại bằng WebAudio.
+   Volume thấp (~0.05), không chói tai.
+*/
+let musicTimer = null;
+let musicNodes = [];
+const MELODY = [
+  // C major chill arpeggio inspired by Minecraft "Sweden"
+  {f: 261.63, d: 1.5}, // C4
+  {f: 329.63, d: 1.5}, // E4
+  {f: 392.00, d: 1.5}, // G4
+  {f: 523.25, d: 2.0}, // C5
+  {f: 392.00, d: 1.5}, // G4
+  {f: 329.63, d: 1.5}, // E4
+  {f: 293.66, d: 1.5}, // D4
+  {f: 246.94, d: 2.0}, // B3
+];
+function playNote(freq, dur, when){
+  const ctx = getCtx(); if(!ctx) return;
+  const t0 = ctx.currentTime + when;
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(freq, t0);
+  // Soft envelope - gentle pad
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(0.05, t0 + 0.3);
+  g.gain.linearRampToValueAtTime(0.04, t0 + dur*0.6);
+  g.gain.linearRampToValueAtTime(0, t0 + dur);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(t0); o.stop(t0 + dur + 0.1);
+  musicNodes.push(o);
+}
+function startMusic(){
+  if(!musicOn) return;
+  const ctx = getCtx(); if(!ctx) return;
+  if(ctx.state === 'suspended') ctx.resume();
+  stopMusic(); // clear any existing
+  let when = 0;
+  function scheduleLoop(){
+    MELODY.forEach(n => {
+      playNote(n.f, n.d, when);
+      // Soft octave below for warmth
+      playNote(n.f/2, n.d, when);
+      when += n.d * 0.7;
+    });
+  }
+  scheduleLoop();
+  // Loop: schedule next batch right before current ends
+  const totalDur = MELODY.reduce((s,n)=>s+n.d*0.7, 0);
+  musicTimer = setInterval(() => {
+    if(!musicOn) { stopMusic(); return; }
+    let w = 0;
+    MELODY.forEach(n => {
+      playNote(n.f, n.d, w);
+      playNote(n.f/2, n.d, w);
+      w += n.d * 0.7;
+    });
+  }, totalDur * 1000);
+}
+function stopMusic(){
+  if(musicTimer){ clearInterval(musicTimer); musicTimer = null; }
+  musicNodes.forEach(o => { try{ o.stop(); }catch(e){} });
+  musicNodes = [];
+}
+
+document.getElementById('soundToggle').onclick = function(){
+  soundOn = !soundOn;
+  this.textContent = soundOn ? '🔊' : '🔇';
+  if(soundOn) sndClick();
+};
+document.getElementById('musicBtn').onclick = function(e){
+  e.stopPropagation();
+  musicOn = !musicOn;
+  this.textContent = musicOn ? '🎵' : '🔕';
+  if(musicOn && document.getElementById('modal').classList.contains('active')) startMusic();
+  else stopMusic();
+};
+
+// Resume audio on first interaction (browser policy)
+document.addEventListener('click', () => {
+  const c = getCtx(); if(c && c.state==='suspended') c.resume();
+}, {once:true});
+
+/* ============================================================
+   🎨 ICON MAP
+   ============================================================ */
+const ICONS = {
+  "Wood Plank":"🟫","Stick":"🪵","Cobblestone":"🪨","Stone":"⬜","Smooth Stone":"⬜",
+  "Iron Ingot":"⬜","Gold Ingot":"🟨","Gold Nugget":"✨","Iron Nugget":"✨",
+  "Diamond":"💎","Netherite Ingot":"⬛","Netherite Scrap":"🟤",
+  "Wheat":"🌾","String":"🧵","Leather":"🟫","Coal":"⚫","Charcoal":"⚫","Redstone":"🔴",
+  "Glass":"🔲","Glass Pane":"🔲","Sand":"🟨","Sugar Cane":"🎋","Paper":"📄",
+  "Egg":"🥚","Milk":"🥛","Sugar":"🍬","Apple":"🍎","Carrot":"🥕","Potato":"🥔","Beetroot":"🟣",
+  "Feather":"🪶","Flint":"🪨","Iron Block":"⬜","Gold Block":"🟨","Diamond Block":"💠","Redstone Block":"🟥",
+  "Obsidian":"⬛","Wool":"☁️","Slimeball":"🟢","Honey Block":"🍯","Honey Bottle":"🍯",
+  "Blaze Rod":"🔥","Blaze Powder":"✨","Ender Pearl":"🟢","Eye of Ender":"👁️","Ghast Tear":"💧",
+  "Book":"📖","Compass":"🧭","Map":"🗺️","Clock":"⏰","Bucket":"🪣","Water Bucket":"💧",
+  "Rail":"🛤️","Powered Rail":"🛤️","Detector Rail":"🛤️","Activator Rail":"🛤️",
+  "Minecart":"🛒","Boat":"🚣","Chest Boat":"🚣","Bow":"🏹","Crossbow":"🏹","Arrow":"➡️",
+  "Shield":"🛡️","Trident":"🔱","Mace":"🔨","Heavy Core":"⚫","Breeze Rod":"💨",
+  "Bread":"🍞","Cake":"🎂","Cooked Beef":"🥩","Beef":"🥩","Cookie":"🍪","Pumpkin":"🎃",
+  "Pumpkin Pie":"🥧","Mushroom Stew":"🍲","Beetroot Soup":"🍲","Suspicious Stew":"🍲",
+  "Rabbit Stew":"🍲","Bowl":"🥣","Cocoa Bean":"🟫","Red Mushroom":"🍄","Brown Mushroom":"🍄",
+  "Glass Bottle":"🧪","Melon Slice":"🍉","Flower":"🌸",
+  "Torch":"🕯️","Soul Torch":"🕯️","Soul Sand":"🟫","Ladder":"🪜","Door":"🚪","Trapdoor":"🚪",
+  "Iron Door":"🚪","Iron Trapdoor":"🚪","Bed":"🛏️","Chest":"📦","Trapped Chest":"📦",
+  "Ender Chest":"📦","Barrel":"🛢️","Furnace":"🔥","Blast Furnace":"🔥","Smoker":"♨️",
+  "Crafting Table":"🟫","Hopper":"⏬","Piston":"🔧","Sticky Piston":"🔧",
+  "Dispenser":"📤","Dropper":"📥","Observer":"👁️","Repeater":"🔁","Comparator":"📊",
+  "Redstone Torch":"🔴","Redstone Lamp":"💡","Lever":"🎚️","Button":"🔘","Pressure Plate":"⬛",
+  "Note Block":"🎵","Jukebox":"📻","TNT":"🧨","Gunpowder":"💥","Elytra":"🦋","Saddle":"🐴",
+  "Glowstone":"💡","Glowstone Dust":"✨","Lantern":"🏮","Soul Lantern":"🏮","Beacon":"🔆",
+  "Anvil":"⚒️","Enchanting Table":"📕","Brewing Stand":"⚗️","Cauldron":"🍯","Grindstone":"⚙️",
+  "Loom":"🧶","Stonecutter":"🪚","Smithing Table":"🔨","Cartography Table":"🗺️","Fletching Table":"🏹",
+  "Lectern":"📚","Composter":"🌱","Bookshelf":"📚","Item Frame":"🖼️","Glow Item Frame":"🖼️",
+  "Painting":"🖼️","Sign":"📜","Banner":"🚩","Firework Rocket":"🎆",
+  "Conduit":"🔱","End Crystal":"💠","Nether Star":"⭐","Heart of the Sea":"💙","Nautilus Shell":"🐚",
+  "Lapis Lazuli":"🔵","Quartz":"⬜","Bone":"🦴","Bone Meal":"🤍",
+  "Stairs":"🪜","Slab":"▬","Wood Slab":"▬","Stone Slab":"▬","Fence":"🚧","Fence Gate":"🚧",
+  "Wall":"🧱","Brick":"🧱","Bricks":"🧱","Hay Bale":"🌾","Carpet":"🟥","Snow Block":"❄️","Snowball":"⚪",
+  "Tripwire Hook":"🪝","Iron Bars":"⬛","Chain":"⛓️","Spyglass":"🔭","Amethyst Shard":"💜",
+  "Copper Ingot":"🟫","Copper Block":"🟫","Lightning Rod":"⚡",
+  "Echo Shard":"💎","Stone Pressure Plate":"⬛","Cooked Rabbit":"🍗","Baked Potato":"🥔",
+  "Mushroom":"🍄","Ink Sac":"⚫","Turtle Scute":"🐢",
+  // Tools / armor / weapons
+  "Wooden Pickaxe":"⛏️","Stone Pickaxe":"⛏️","Iron Pickaxe":"⛏️","Gold Pickaxe":"⛏️","Diamond Pickaxe":"⛏️","Netherite Pickaxe":"⛏️",
+  "Wooden Axe":"🪓","Stone Axe":"🪓","Iron Axe":"🪓","Gold Axe":"🪓","Diamond Axe":"🪓","Netherite Axe":"🪓",
+  "Wooden Shovel":"🥄","Stone Shovel":"🥄","Iron Shovel":"🥄","Gold Shovel":"🥄","Diamond Shovel":"🥄","Netherite Shovel":"🥄",
+  "Wooden Sword":"🗡️","Stone Sword":"🗡️","Iron Sword":"🗡️","Gold Sword":"🗡️","Diamond Sword":"⚔️","Netherite Sword":"⚔️",
+  "Wooden Hoe":"🌾","Stone Hoe":"🌾","Iron Hoe":"🌾","Gold Hoe":"🌾","Diamond Hoe":"🌾","Netherite Hoe":"🌾",
+  "Shears":"✂️","Fishing Rod":"🎣","Flint and Steel":"🔥",
+  "Leather Helmet":"⛑️","Leather Chestplate":"🦺","Leather Leggings":"👖","Leather Boots":"🥾",
+  "Iron Helmet":"⛑️","Iron Chestplate":"🦺","Iron Leggings":"👖","Iron Boots":"🥾",
+  "Gold Helmet":"⛑️","Gold Chestplate":"🦺","Gold Leggings":"👖","Gold Boots":"🥾",
+  "Diamond Helmet":"⛑️","Diamond Chestplate":"🦺","Diamond Leggings":"👖","Diamond Boots":"🥾",
+  "Netherite Helmet":"⛑️","Netherite Chestplate":"🦺","Netherite Leggings":"👖","Netherite Boots":"🥾",
+  "Chainmail Helmet":"⛑️","Chainmail Chestplate":"🦺","Turtle Shell":"🐢",
+  "Golden Apple":"🍎","Golden Carrot":"🥕","Glistering Melon":"🍈",
+  "Sandstone":"🟨","Recovery Compass":"🧭","Lead":"🧵","Name Tag":"🏷️",
+  "Book and Quill":"📖","Magma Cream":"🟠","Target":"🎯",
+  "Minecart with Chest":"🛒","Minecart with Hopper":"🛒"
+};
+function getIcon(name){
+  if(!name) return "";
+  if(ICONS[name]) return ICONS[name];
+  const k = Object.keys(ICONS).find(x => name.toLowerCase() === x.toLowerCase());
+  if(k) return ICONS[k];
+  const k2 = Object.keys(ICONS).find(x => name.toLowerCase().includes(x.toLowerCase()));
+  return k2 ? ICONS[k2] : "▪️";
+}
+function shortName(n){
+  if(!n) return "";
+  return n.replace("Wood Plank","Plank").replace("Cobblestone","Cobble")
+          .replace("Iron Ingot","Iron").replace("Gold Ingot","Gold")
+          .replace("Netherite Ingot","Nether.").replace("Sugar Cane","Cane")
+          .replace("Blaze Rod","Blaze").replace("Glowstone Dust","Glow")
+          .replace("Iron Nugget","I.Nug").replace("Gold Nugget","G.Nug")
+          .replace("Stone Pressure Plate","Plate")
+          .replace("Tripwire Hook","Hook");
+}
+
+/* ============================================================
+   📜 RECIPES (130+) - dữ liệu rõ ràng, dễ thêm sau
+   ============================================================ */
+const RECIPES = [
+  // --- BUILDING ---
+  {name:"Crafting Table", cat:"Building", grid:["Wood Plank","Wood Plank","","Wood Plank","Wood Plank","","","",""], result:"Crafting Table", count:1, desc:"Khối cơ bản để chế tạo mọi thứ."},
+  {name:"Furnace", cat:"Building", grid:["Cobblestone","Cobblestone","Cobblestone","Cobblestone","","Cobblestone","Cobblestone","Cobblestone","Cobblestone"], result:"Furnace", count:1, desc:"Nấu chảy quặng và nướng thức ăn."},
+  {name:"Blast Furnace", cat:"Building", grid:["Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Furnace","Iron Ingot","Smooth Stone","Smooth Stone","Smooth Stone"], result:"Blast Furnace", count:1, desc:"Nấu quặng nhanh gấp đôi."},
+  {name:"Smoker", cat:"Building", grid:["","Wood Plank","","Wood Plank","Furnace","Wood Plank","","Wood Plank",""], result:"Smoker", count:1, desc:"Nấu thức ăn nhanh gấp đôi."},
+  {name:"Chest", cat:"Building", grid:["Wood Plank","Wood Plank","Wood Plank","Wood Plank","","Wood Plank","Wood Plank","Wood Plank","Wood Plank"], result:"Chest", count:1, desc:"Chứa đồ với 27 ô."},
+  {name:"Trapped Chest", cat:"Redstone", grid:["Chest","Tripwire Hook","","","","","","",""], result:"Trapped Chest", count:1, desc:"Rương phát tín hiệu khi mở."},
+  {name:"Ender Chest", cat:"Building", grid:["Obsidian","Obsidian","Obsidian","Obsidian","Eye of Ender","Obsidian","Obsidian","Obsidian","Obsidian"], result:"Ender Chest", count:1, desc:"Kho đồ chung giữa các rương."},
+  {name:"Barrel", cat:"Building", grid:["Wood Plank","Wood Slab","Wood Plank","Wood Plank","","Wood Plank","Wood Plank","Wood Slab","Wood Plank"], result:"Barrel", count:1, desc:"Thùng chứa đồ - không cần khoảng trống."},
+  {name:"Bed", cat:"Building", grid:["","","","Wool","Wool","Wool","Wood Plank","Wood Plank","Wood Plank"], result:"Bed", count:1, desc:"Ngủ và đặt điểm hồi sinh."},
+  {name:"Door", cat:"Building", grid:["Wood Plank","Wood Plank","","Wood Plank","Wood Plank","","Wood Plank","Wood Plank",""], result:"Door", count:3, desc:"Cửa gỗ mở/đóng được."},
+  {name:"Iron Door", cat:"Building", grid:["Iron Ingot","Iron Ingot","","Iron Ingot","Iron Ingot","","Iron Ingot","Iron Ingot",""], result:"Iron Door", count:3, desc:"Cửa sắt - cần redstone để mở."},
+  {name:"Trapdoor", cat:"Building", grid:["Wood Plank","Wood Plank","Wood Plank","Wood Plank","Wood Plank","Wood Plank","","",""], result:"Trapdoor", count:2, desc:"Cửa sập gỗ."},
+  {name:"Iron Trapdoor", cat:"Building", grid:["","","","Iron Ingot","Iron Ingot","","Iron Ingot","Iron Ingot",""], result:"Iron Trapdoor", count:1, desc:"Cửa sập sắt."},
+  {name:"Stairs", cat:"Building", grid:["Wood Plank","","","Wood Plank","Wood Plank","","Wood Plank","Wood Plank","Wood Plank"], result:"Stairs", count:4, desc:"Bậc thang."},
+  {name:"Slab", cat:"Building", grid:["","","","","","","Wood Plank","Wood Plank","Wood Plank"], result:"Slab", count:6, desc:"Tấm nửa khối."},
+  {name:"Fence", cat:"Building", grid:["","","","Wood Plank","Stick","Wood Plank","Wood Plank","Stick","Wood Plank"], result:"Fence", count:3, desc:"Hàng rào gỗ."},
+  {name:"Fence Gate", cat:"Building", grid:["","","","Stick","Wood Plank","Stick","Stick","Wood Plank","Stick"], result:"Fence Gate", count:1, desc:"Cổng hàng rào."},
+  {name:"Wall", cat:"Building", grid:["","","","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone"], result:"Wall", count:6, desc:"Tường thấp."},
+  {name:"Ladder", cat:"Building", grid:["Stick","","Stick","Stick","Stick","Stick","Stick","","Stick"], result:"Ladder", count:3, desc:"Leo lên xuống."},
+  {name:"Glass Pane", cat:"Building", grid:["","","","Glass","Glass","Glass","Glass","Glass","Glass"], result:"Glass Pane", count:16, desc:"Cửa sổ kính mỏng."},
+  {name:"Iron Bars", cat:"Building", grid:["","","","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot"], result:"Iron Bars", count:16, desc:"Song sắt."},
+  {name:"Bricks", cat:"Building", grid:["","","","Brick","Brick","","Brick","Brick",""], result:"Bricks", count:1, desc:"Khối gạch nung."},
+  {name:"Sandstone", cat:"Building", grid:["","","","Sand","Sand","","Sand","Sand",""], result:"Sandstone", count:1, desc:"Khối đá cát."},
+  {name:"Snow Block", cat:"Building", grid:["","","","Snowball","Snowball","","Snowball","Snowball",""], result:"Snow Block", count:1, desc:"Khối tuyết."},
+  {name:"Hay Bale", cat:"Building", grid:["Wheat","Wheat","Wheat","Wheat","Wheat","Wheat","Wheat","Wheat","Wheat"], result:"Hay Bale", count:1, desc:"Bó rơm - giảm thiệt hại rơi."},
+  {name:"Iron Block", cat:"Building", grid:["Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot"], result:"Iron Block", count:1, desc:"Khối từ 9 sắt."},
+  {name:"Gold Block", cat:"Building", grid:["Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot"], result:"Gold Block", count:1, desc:"Khối từ 9 vàng."},
+  {name:"Diamond Block", cat:"Building", grid:["Diamond","Diamond","Diamond","Diamond","Diamond","Diamond","Diamond","Diamond","Diamond"], result:"Diamond Block", count:1, desc:"Khối từ 9 kim cương."},
+  {name:"Redstone Block", cat:"Redstone", grid:["Redstone","Redstone","Redstone","Redstone","Redstone","Redstone","Redstone","Redstone","Redstone"], result:"Redstone Block", count:1, desc:"Phát redstone vĩnh viễn."},
+  {name:"Copper Block", cat:"Building", grid:["Copper Ingot","Copper Ingot","Copper Ingot","Copper Ingot","Copper Ingot","Copper Ingot","Copper Ingot","Copper Ingot","Copper Ingot"], result:"Copper Block", count:1, desc:"Khối đồng - oxy hoá theo thời gian."},
+  {name:"Bookshelf", cat:"Building", grid:["Wood Plank","Wood Plank","Wood Plank","Book","Book","Book","Wood Plank","Wood Plank","Wood Plank"], result:"Bookshelf", count:1, desc:"Tăng cấp phù phép."},
+
+  // --- DECORATION ---
+  {name:"Painting", cat:"Decoration", grid:["Stick","Stick","Stick","Stick","Wool","Stick","Stick","Stick","Stick"], result:"Painting", count:1, desc:"Tranh treo tường."},
+  {name:"Item Frame", cat:"Decoration", grid:["Stick","Stick","Stick","Stick","Leather","Stick","Stick","Stick","Stick"], result:"Item Frame", count:1, desc:"Khung treo vật phẩm."},
+  {name:"Glow Item Frame", cat:"Decoration", grid:["","Glowstone Dust","","","Item Frame","","","",""], result:"Glow Item Frame", count:1, desc:"Khung treo phát sáng."},
+  {name:"Sign", cat:"Decoration", grid:["Wood Plank","Wood Plank","Wood Plank","Wood Plank","Wood Plank","Wood Plank","","Stick",""], result:"Sign", count:3, desc:"Bảng để viết chữ."},
+  {name:"Banner", cat:"Decoration", grid:["Wool","Wool","Wool","Wool","Wool","Wool","","Stick",""], result:"Banner", count:1, desc:"Cờ trang trí."},
+  {name:"Carpet", cat:"Decoration", grid:["","","","","","","Wool","Wool",""], result:"Carpet", count:3, desc:"Thảm mỏng."},
+  {name:"Glowstone", cat:"Decoration", grid:["","","","","Glowstone Dust","Glowstone Dust","","Glowstone Dust","Glowstone Dust"], result:"Glowstone", count:1, desc:"Khối phát sáng từ Nether."},
+  {name:"Lantern", cat:"Decoration", grid:["Iron Nugget","Iron Nugget","Iron Nugget","Iron Nugget","Torch","Iron Nugget","Iron Nugget","Iron Nugget","Iron Nugget"], result:"Lantern", count:1, desc:"Đèn lồng treo."},
+  {name:"Soul Lantern", cat:"Decoration", grid:["Iron Nugget","Iron Nugget","Iron Nugget","Iron Nugget","Soul Torch","Iron Nugget","Iron Nugget","Iron Nugget","Iron Nugget"], result:"Soul Lantern", count:1, desc:"Đèn lồng linh hồn xanh."},
+  {name:"Chain", cat:"Decoration", grid:["","Iron Nugget","","","Iron Ingot","","","Iron Nugget",""], result:"Chain", count:1, desc:"Dây xích sắt."},
+  {name:"Beacon", cat:"Decoration", grid:["Glass","Glass","Glass","Glass","Nether Star","Glass","Obsidian","Obsidian","Obsidian"], result:"Beacon", count:1, desc:"Cung cấp hiệu ứng tăng sức mạnh."},
+  {name:"Conduit", cat:"Decoration", grid:["Nautilus Shell","Nautilus Shell","Nautilus Shell","Nautilus Shell","Heart of the Sea","Nautilus Shell","Nautilus Shell","Nautilus Shell","Nautilus Shell"], result:"Conduit", count:1, desc:"Beacon dưới nước."},
+  {name:"End Crystal", cat:"Decoration", grid:["Glass","Glass","Glass","Glass","Eye of Ender","Glass","Glass","Ghast Tear","Glass"], result:"End Crystal", count:1, desc:"Hồi sinh Ender Dragon."},
+
+  // --- TOOLS ---
+  {name:"Wooden Pickaxe", cat:"Tools", grid:["Wood Plank","Wood Plank","Wood Plank","","Stick","","","Stick",""], result:"Wooden Pickaxe", count:1, desc:"Cuốc gỗ - đào đá."},
+  {name:"Stone Pickaxe", cat:"Tools", grid:["Cobblestone","Cobblestone","Cobblestone","","Stick","","","Stick",""], result:"Stone Pickaxe", count:1, desc:"Cuốc đá - đào sắt."},
+  {name:"Iron Pickaxe", cat:"Tools", grid:["Iron Ingot","Iron Ingot","Iron Ingot","","Stick","","","Stick",""], result:"Iron Pickaxe", count:1, desc:"Cuốc sắt - đào kim cương."},
+  {name:"Gold Pickaxe", cat:"Tools", grid:["Gold Ingot","Gold Ingot","Gold Ingot","","Stick","","","Stick",""], result:"Gold Pickaxe", count:1, desc:"Cuốc vàng - nhanh nhưng dễ hỏng."},
+  {name:"Diamond Pickaxe", cat:"Tools", grid:["Diamond","Diamond","Diamond","","Stick","","","Stick",""], result:"Diamond Pickaxe", count:1, desc:"Cuốc kim cương - đào obsidian."},
+  {name:"Netherite Pickaxe", cat:"Tools", grid:["","","","","","","","",""], result:"Netherite Pickaxe", count:1, desc:"Smithing Table: Diamond Pickaxe + Netherite Ingot + Template."},
+  {name:"Wooden Axe", cat:"Tools", grid:["Wood Plank","Wood Plank","","Wood Plank","Stick","","","Stick",""], result:"Wooden Axe", count:1, desc:"Rìu gỗ."},
+  {name:"Stone Axe", cat:"Tools", grid:["Cobblestone","Cobblestone","","Cobblestone","Stick","","","Stick",""], result:"Stone Axe", count:1, desc:"Rìu đá."},
+  {name:"Iron Axe", cat:"Tools", grid:["Iron Ingot","Iron Ingot","","Iron Ingot","Stick","","","Stick",""], result:"Iron Axe", count:1, desc:"Rìu sắt."},
+  {name:"Gold Axe", cat:"Tools", grid:["Gold Ingot","Gold Ingot","","Gold Ingot","Stick","","","Stick",""], result:"Gold Axe", count:1, desc:"Rìu vàng."},
+  {name:"Diamond Axe", cat:"Tools", grid:["Diamond","Diamond","","Diamond","Stick","","","Stick",""], result:"Diamond Axe", count:1, desc:"Rìu kim cương."},
+  {name:"Wooden Shovel", cat:"Tools", grid:["","Wood Plank","","","Stick","","","Stick",""], result:"Wooden Shovel", count:1, desc:"Xẻng gỗ."},
+  {name:"Stone Shovel", cat:"Tools", grid:["","Cobblestone","","","Stick","","","Stick",""], result:"Stone Shovel", count:1, desc:"Xẻng đá."},
+  {name:"Iron Shovel", cat:"Tools", grid:["","Iron Ingot","","","Stick","","","Stick",""], result:"Iron Shovel", count:1, desc:"Xẻng sắt."},
+  {name:"Gold Shovel", cat:"Tools", grid:["","Gold Ingot","","","Stick","","","Stick",""], result:"Gold Shovel", count:1, desc:"Xẻng vàng."},
+  {name:"Diamond Shovel", cat:"Tools", grid:["","Diamond","","","Stick","","","Stick",""], result:"Diamond Shovel", count:1, desc:"Xẻng kim cương."},
+  {name:"Wooden Hoe", cat:"Tools", grid:["Wood Plank","Wood Plank","","","Stick","","","Stick",""], result:"Wooden Hoe", count:1, desc:"Cuốc nông nghiệp gỗ."},
+  {name:"Stone Hoe", cat:"Tools", grid:["Cobblestone","Cobblestone","","","Stick","","","Stick",""], result:"Stone Hoe", count:1, desc:"Cuốc nông nghiệp đá."},
+  {name:"Iron Hoe", cat:"Tools", grid:["Iron Ingot","Iron Ingot","","","Stick","","","Stick",""], result:"Iron Hoe", count:1, desc:"Cuốc nông nghiệp sắt."},
+  {name:"Diamond Hoe", cat:"Tools", grid:["Diamond","Diamond","","","Stick","","","Stick",""], result:"Diamond Hoe", count:1, desc:"Cuốc nông nghiệp kim cương."},
+  {name:"Shears", cat:"Tools", grid:["","Iron Ingot","","Iron Ingot","","","","",""], result:"Shears", count:1, desc:"Cắt lông cừu, lá cây."},
+  {name:"Fishing Rod", cat:"Tools", grid:["","","Stick","","Stick","String","Stick","","String"], result:"Fishing Rod", count:1, desc:"Câu cá."},
+  {name:"Bucket", cat:"Tools", grid:["","","","Iron Ingot","","Iron Ingot","","Iron Ingot",""], result:"Bucket", count:1, desc:"Múc nước, dung nham, sữa."},
+  {name:"Flint and Steel", cat:"Tools", grid:["Iron Ingot","","","","Flint","","","",""], result:"Flint and Steel", count:1, desc:"Tạo lửa."},
+  {name:"Compass", cat:"Tools", grid:["","Iron Ingot","","Iron Ingot","Redstone","Iron Ingot","","Iron Ingot",""], result:"Compass", count:1, desc:"Chỉ về điểm spawn."},
+  {name:"Recovery Compass", cat:"Tools", grid:["Echo Shard","Echo Shard","Echo Shard","Echo Shard","Compass","Echo Shard","Echo Shard","Echo Shard","Echo Shard"], result:"Recovery Compass", count:1, desc:"Chỉ về nơi bạn chết lần trước."},
+  {name:"Clock", cat:"Tools", grid:["","Gold Ingot","","Gold Ingot","Redstone","Gold Ingot","","Gold Ingot",""], result:"Clock", count:1, desc:"Hiển thị giờ trong ngày."},
+  {name:"Map", cat:"Tools", grid:["Paper","Paper","Paper","Paper","Compass","Paper","Paper","Paper","Paper"], result:"Map", count:1, desc:"Bản đồ khu vực."},
+  {name:"Spyglass", cat:"Tools", grid:["","Amethyst Shard","","","Copper Ingot","","","Copper Ingot",""], result:"Spyglass", count:1, desc:"Ống nhòm phóng to."},
+  {name:"Lead", cat:"Tools", grid:["String","String","","String","Slimeball","","","","String"], result:"Lead", count:2, desc:"Dây dắt động vật."},
+
+  // --- WEAPONS ---
+  {name:"Wooden Sword", cat:"Weapons", grid:["","Wood Plank","","","Wood Plank","","","Stick",""], result:"Wooden Sword", count:1, desc:"Kiếm gỗ - 4 sát thương."},
+  {name:"Stone Sword", cat:"Weapons", grid:["","Cobblestone","","","Cobblestone","","","Stick",""], result:"Stone Sword", count:1, desc:"Kiếm đá - 5 sát thương."},
+  {name:"Iron Sword", cat:"Weapons", grid:["","Iron Ingot","","","Iron Ingot","","","Stick",""], result:"Iron Sword", count:1, desc:"Kiếm sắt - 6 sát thương."},
+  {name:"Gold Sword", cat:"Weapons", grid:["","Gold Ingot","","","Gold Ingot","","","Stick",""], result:"Gold Sword", count:1, desc:"Kiếm vàng - dễ phù phép."},
+  {name:"Diamond Sword", cat:"Weapons", grid:["","Diamond","","","Diamond","","","Stick",""], result:"Diamond Sword", count:1, desc:"Kiếm kim cương - 7 sát thương."},
+  {name:"Netherite Sword", cat:"Weapons", grid:["","","","","","","","",""], result:"Netherite Sword", count:1, desc:"Smithing Table: Diamond Sword + Netherite + Template."},
+  {name:"Bow", cat:"Weapons", grid:["","Stick","String","Stick","","String","","Stick","String"], result:"Bow", count:1, desc:"Cung bắn tên."},
+  {name:"Arrow", cat:"Weapons", grid:["","Flint","","","Stick","","","Feather",""], result:"Arrow", count:4, desc:"Tên dùng cho cung."},
+  {name:"Crossbow", cat:"Weapons", grid:["Stick","Iron Ingot","Stick","String","Tripwire Hook","String","","Stick",""], result:"Crossbow", count:1, desc:"Nỏ - mạnh hơn cung."},
+  {name:"Mace", cat:"Weapons", grid:["","","","","Heavy Core","","","Breeze Rod",""], result:"Mace", count:1, desc:"Vũ khí mới (1.21) - sát thương khủng khi rơi từ cao."},
+  {name:"TNT", cat:"Weapons", grid:["Gunpowder","Sand","Gunpowder","Sand","Gunpowder","Sand","Gunpowder","Sand","Gunpowder"], result:"TNT", count:1, desc:"Khối nổ."},
+  {name:"Firework Rocket", cat:"Misc", grid:["","Paper","","","Gunpowder","","","",""], result:"Firework Rocket", count:3, desc:"Pháo hoa - dùng với Elytra để bay."},
+
+  // --- COMBAT ---
+  {name:"Shield", cat:"Combat", grid:["Wood Plank","Iron Ingot","Wood Plank","Wood Plank","Wood Plank","Wood Plank","","Wood Plank",""], result:"Shield", count:1, desc:"Khiên chống đỡ tấn công."},
+  {name:"Trident (Found)", cat:"Combat", grid:["","","","","","","","",""], result:"Trident", count:1, desc:"Đinh ba - chỉ rơi từ Drowned, không chế tạo."},
+
+  // --- ARMOR ---
+  {name:"Leather Helmet", cat:"Armor", grid:["Leather","Leather","Leather","Leather","","Leather","","",""], result:"Leather Helmet", count:1, desc:"Mũ da."},
+  {name:"Leather Chestplate", cat:"Armor", grid:["Leather","","Leather","Leather","Leather","Leather","Leather","Leather","Leather"], result:"Leather Chestplate", count:1, desc:"Áo da."},
+  {name:"Leather Leggings", cat:"Armor", grid:["Leather","Leather","Leather","Leather","","Leather","Leather","","Leather"], result:"Leather Leggings", count:1, desc:"Quần da."},
+  {name:"Leather Boots", cat:"Armor", grid:["","","","Leather","","Leather","Leather","","Leather"], result:"Leather Boots", count:1, desc:"Giày da."},
+  {name:"Iron Helmet", cat:"Armor", grid:["Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","","Iron Ingot","","",""], result:"Iron Helmet", count:1, desc:"Mũ sắt."},
+  {name:"Iron Chestplate", cat:"Armor", grid:["Iron Ingot","","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot"], result:"Iron Chestplate", count:1, desc:"Áo giáp sắt."},
+  {name:"Iron Leggings", cat:"Armor", grid:["Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot","","Iron Ingot","Iron Ingot","","Iron Ingot"], result:"Iron Leggings", count:1, desc:"Quần giáp sắt."},
+  {name:"Iron Boots", cat:"Armor", grid:["","","","Iron Ingot","","Iron Ingot","Iron Ingot","","Iron Ingot"], result:"Iron Boots", count:1, desc:"Giày sắt."},
+  {name:"Gold Helmet", cat:"Armor", grid:["Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","","Gold Ingot","","",""], result:"Gold Helmet", count:1, desc:"Mũ vàng - Piglin không tấn công."},
+  {name:"Gold Chestplate", cat:"Armor", grid:["Gold Ingot","","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot"], result:"Gold Chestplate", count:1, desc:"Áo giáp vàng."},
+  {name:"Gold Leggings", cat:"Armor", grid:["Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","","Gold Ingot","Gold Ingot","","Gold Ingot"], result:"Gold Leggings", count:1, desc:"Quần giáp vàng."},
+  {name:"Gold Boots", cat:"Armor", grid:["","","","Gold Ingot","","Gold Ingot","Gold Ingot","","Gold Ingot"], result:"Gold Boots", count:1, desc:"Giày vàng."},
+  {name:"Diamond Helmet", cat:"Armor", grid:["Diamond","Diamond","Diamond","Diamond","","Diamond","","",""], result:"Diamond Helmet", count:1, desc:"Mũ kim cương."},
+  {name:"Diamond Chestplate", cat:"Armor", grid:["Diamond","","Diamond","Diamond","Diamond","Diamond","Diamond","Diamond","Diamond"], result:"Diamond Chestplate", count:1, desc:"Áo giáp kim cương."},
+  {name:"Diamond Leggings", cat:"Armor", grid:["Diamond","Diamond","Diamond","Diamond","","Diamond","Diamond","","Diamond"], result:"Diamond Leggings", count:1, desc:"Quần giáp kim cương."},
+  {name:"Diamond Boots", cat:"Armor", grid:["","","","Diamond","","Diamond","Diamond","","Diamond"], result:"Diamond Boots", count:1, desc:"Giày kim cương."},
+  {name:"Netherite Helmet", cat:"Armor", grid:["","","","","","","","",""], result:"Netherite Helmet", count:1, desc:"Smithing Table: Diamond Helmet + Netherite Ingot."},
+  {name:"Netherite Chestplate", cat:"Armor", grid:["","","","","","","","",""], result:"Netherite Chestplate", count:1, desc:"Smithing Table: Diamond Chestplate + Netherite."},
+  {name:"Turtle Shell", cat:"Armor", grid:["Turtle Scute","Turtle Scute","Turtle Scute","Turtle Scute","","Turtle Scute","","",""], result:"Turtle Shell", count:1, desc:"Mũ rùa - thở dưới nước 10s."},
+
+  // --- FOOD ---
+  {name:"Bread", cat:"Food", grid:["","","","","","","Wheat","Wheat","Wheat"], result:"Bread", count:1, desc:"Bánh mì - hồi 5 độ no."},
+  {name:"Cake", cat:"Food", grid:["Milk","Milk","Milk","Sugar","Egg","Sugar","Wheat","Wheat","Wheat"], result:"Cake", count:1, desc:"Bánh kem - 7 lát."},
+  {name:"Cookie", cat:"Food", grid:["","","","","","","Wheat","Cocoa Bean","Wheat"], result:"Cookie", count:8, desc:"Bánh quy."},
+  {name:"Golden Apple", cat:"Food", grid:["Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot","Apple","Gold Ingot","Gold Ingot","Gold Ingot","Gold Ingot"], result:"Golden Apple", count:1, desc:"Táo vàng - hồi máu mạnh."},
+  {name:"Golden Carrot", cat:"Food", grid:["Gold Nugget","Gold Nugget","Gold Nugget","Gold Nugget","Carrot","Gold Nugget","Gold Nugget","Gold Nugget","Gold Nugget"], result:"Golden Carrot", count:1, desc:"Cà rốt vàng - hồi no nhiều."},
+  {name:"Glistering Melon", cat:"Food", grid:["Gold Nugget","Gold Nugget","Gold Nugget","Gold Nugget","Melon Slice","Gold Nugget","Gold Nugget","Gold Nugget","Gold Nugget"], result:"Glistering Melon", count:1, desc:"Dưa vàng - dùng cho potion."},
+  {name:"Pumpkin Pie", cat:"Food", grid:["","","","Pumpkin","Sugar","Egg","","",""], result:"Pumpkin Pie", count:1, desc:"Bánh bí ngô."},
+  {name:"Mushroom Stew", cat:"Food", grid:["","","","Red Mushroom","Brown Mushroom","","","Bowl",""], result:"Mushroom Stew", count:1, desc:"Súp nấm."},
+  {name:"Beetroot Soup", cat:"Food", grid:["Beetroot","Beetroot","Beetroot","Beetroot","Beetroot","Beetroot","","Bowl",""], result:"Beetroot Soup", count:1, desc:"Súp củ dền."},
+  {name:"Suspicious Stew", cat:"Food", grid:["","Flower","","Red Mushroom","Brown Mushroom","","","Bowl",""], result:"Suspicious Stew", count:1, desc:"Súp lạ - hiệu ứng tuỳ hoa."},
+  {name:"Rabbit Stew", cat:"Food", grid:["","Cooked Rabbit","","Carrot","Baked Potato","Mushroom","","Bowl",""], result:"Rabbit Stew", count:1, desc:"Súp thỏ - hồi nhiều no."},
+  {name:"Bowl", cat:"Food", grid:["","","","Wood Plank","","Wood Plank","","Wood Plank",""], result:"Bowl", count:4, desc:"Tô gỗ."},
+  {name:"Sugar", cat:"Food", grid:["Sugar Cane","","","","","","","",""], result:"Sugar", count:1, desc:"Đường từ mía."},
+
+  // --- REDSTONE ---
+  {name:"Redstone Torch", cat:"Redstone", grid:["","","","","Redstone","","","Stick",""], result:"Redstone Torch", count:1, desc:"Đuốc đỏ - phát tín hiệu."},
+  {name:"Redstone Lamp", cat:"Redstone", grid:["","Redstone","","Redstone","Glowstone","Redstone","","Redstone",""], result:"Redstone Lamp", count:1, desc:"Đèn redstone bật/tắt được."},
+  {name:"Piston", cat:"Redstone", grid:["Wood Plank","Wood Plank","Wood Plank","Cobblestone","Iron Ingot","Cobblestone","Cobblestone","Redstone","Cobblestone"], result:"Piston", count:1, desc:"Đẩy khối."},
+  {name:"Sticky Piston", cat:"Redstone", grid:["","Slimeball","","","Piston","","","",""], result:"Sticky Piston", count:1, desc:"Piston dính - đẩy & kéo."},
+  {name:"Hopper", cat:"Redstone", grid:["Iron Ingot","","Iron Ingot","Iron Ingot","Chest","Iron Ingot","","Iron Ingot",""], result:"Hopper", count:1, desc:"Hút và chuyển đồ."},
+  {name:"Dispenser", cat:"Redstone", grid:["Cobblestone","Cobblestone","Cobblestone","Cobblestone","Bow","Cobblestone","Cobblestone","Redstone","Cobblestone"], result:"Dispenser", count:1, desc:"Bắn/phun đồ vật."},
+  {name:"Dropper", cat:"Redstone", grid:["Cobblestone","Cobblestone","Cobblestone","Cobblestone","","Cobblestone","Cobblestone","Redstone","Cobblestone"], result:"Dropper", count:1, desc:"Thả đồ vật."},
+  {name:"Observer", cat:"Redstone", grid:["Cobblestone","Cobblestone","Cobblestone","Redstone","Redstone","Quartz","Cobblestone","Cobblestone","Cobblestone"], result:"Observer", count:1, desc:"Cảm biến thay đổi khối."},
+  {name:"Repeater", cat:"Redstone", grid:["","","","Redstone Torch","Redstone","Redstone Torch","Stone","Stone","Stone"], result:"Repeater", count:1, desc:"Khuếch đại tín hiệu redstone."},
+  {name:"Comparator", cat:"Redstone", grid:["","Redstone Torch","","Redstone Torch","Quartz","Redstone Torch","Stone","Stone","Stone"], result:"Comparator", count:1, desc:"So sánh tín hiệu redstone."},
+  {name:"Lever", cat:"Redstone", grid:["","Stick","","","Cobblestone","","","",""], result:"Lever", count:1, desc:"Công tắc."},
+  {name:"Button", cat:"Redstone", grid:["Wood Plank","","","","","","","",""], result:"Button", count:1, desc:"Nút bấm."},
+  {name:"Pressure Plate", cat:"Redstone", grid:["Wood Plank","Wood Plank","","","","","","",""], result:"Pressure Plate", count:1, desc:"Tấm áp lực."},
+  {name:"Note Block", cat:"Redstone", grid:["Wood Plank","Wood Plank","Wood Plank","Wood Plank","Redstone","Wood Plank","Wood Plank","Wood Plank","Wood Plank"], result:"Note Block", count:1, desc:"Phát nốt nhạc."},
+  {name:"Jukebox", cat:"Redstone", grid:["Wood Plank","Wood Plank","Wood Plank","Wood Plank","Diamond","Wood Plank","Wood Plank","Wood Plank","Wood Plank"], result:"Jukebox", count:1, desc:"Phát đĩa nhạc."},
+  {name:"Target", cat:"Redstone", grid:["","Redstone","","Redstone","Hay Bale","Redstone","","Redstone",""], result:"Target", count:1, desc:"Bia bắn phát tín hiệu."},
+
+  // --- TRANSPORTATION ---
+  {name:"Boat", cat:"Transportation", grid:["","","","Wood Plank","","Wood Plank","Wood Plank","Wood Plank","Wood Plank"], result:"Boat", count:1, desc:"Thuyền gỗ."},
+  {name:"Chest Boat", cat:"Transportation", grid:["","","","","Chest","","","Boat",""], result:"Chest Boat", count:1, desc:"Thuyền có rương chứa đồ."},
+  {name:"Minecart", cat:"Transportation", grid:["","","","Iron Ingot","","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot"], result:"Minecart", count:1, desc:"Xe goòng."},
+  {name:"Minecart with Chest", cat:"Transportation", grid:["","","","","Chest","","","Minecart",""], result:"Minecart with Chest", count:1, desc:"Xe goòng có rương."},
+  {name:"Minecart with Hopper", cat:"Transportation", grid:["","","","","Hopper","","","Minecart",""], result:"Minecart with Hopper", count:1, desc:"Xe goòng tự hút đồ."},
+  {name:"Rail", cat:"Transportation", grid:["Iron Ingot","","Iron Ingot","Iron Ingot","Stick","Iron Ingot","Iron Ingot","","Iron Ingot"], result:"Rail", count:16, desc:"Đường ray."},
+  {name:"Powered Rail", cat:"Transportation", grid:["Gold Ingot","","Gold Ingot","Gold Ingot","Stick","Gold Ingot","Gold Ingot","Redstone","Gold Ingot"], result:"Powered Rail", count:6, desc:"Đường ray tăng tốc."},
+  {name:"Detector Rail", cat:"Transportation", grid:["Iron Ingot","","Iron Ingot","Iron Ingot","Stone Pressure Plate","Iron Ingot","Iron Ingot","Redstone","Iron Ingot"], result:"Detector Rail", count:6, desc:"Đường ray cảm biến."},
+  {name:"Activator Rail", cat:"Transportation", grid:["Iron Ingot","Stick","Iron Ingot","Iron Ingot","Redstone Torch","Iron Ingot","Iron Ingot","Stick","Iron Ingot"], result:"Activator Rail", count:6, desc:"Đường ray kích hoạt."},
+  {name:"Saddle (Found)", cat:"Transportation", grid:["","","","","","","","",""], result:"Saddle", count:1, desc:"Yên ngựa - chỉ tìm thấy."},
+  {name:"Elytra (Found)", cat:"Transportation", grid:["","","","","","","","",""], result:"Elytra", count:1, desc:"Cánh bay - tìm trong End City."},
+
+  // --- MISC ---
+  {name:"Torch", cat:"Misc", grid:["","","","","Coal","","","Stick",""], result:"Torch", count:4, desc:"Đuốc chiếu sáng."},
+  {name:"Soul Torch", cat:"Misc", grid:["","","","","Coal","","Soul Sand","Stick",""], result:"Soul Torch", count:4, desc:"Đuốc linh hồn xanh."},
+  {name:"Paper", cat:"Misc", grid:["","","","","","","Sugar Cane","Sugar Cane","Sugar Cane"], result:"Paper", count:3, desc:"Giấy từ mía."},
+  {name:"Book", cat:"Misc", grid:["Paper","","","Paper","","","Leather","",""], result:"Book", count:1, desc:"Sách trống."},
+  {name:"Book and Quill", cat:"Misc", grid:["Book","","","Feather","","","Ink Sac","",""], result:"Book and Quill", count:1, desc:"Sách viết."},
+  {name:"Anvil", cat:"Misc", grid:["Iron Block","Iron Block","Iron Block","","Iron Ingot","","Iron Ingot","Iron Ingot","Iron Ingot"], result:"Anvil", count:1, desc:"Đe sửa và đặt tên đồ."},
+  {name:"Enchanting Table", cat:"Misc", grid:["","Book","","Diamond","Obsidian","Diamond","Obsidian","Obsidian","Obsidian"], result:"Enchanting Table", count:1, desc:"Bàn phù phép đồ."},
+  {name:"Brewing Stand", cat:"Misc", grid:["","Blaze Rod","","Cobblestone","Cobblestone","Cobblestone","","",""], result:"Brewing Stand", count:1, desc:"Pha chế thuốc."},
+  {name:"Cauldron", cat:"Misc", grid:["Iron Ingot","","Iron Ingot","Iron Ingot","","Iron Ingot","Iron Ingot","Iron Ingot","Iron Ingot"], result:"Cauldron", count:1, desc:"Vạc chứa nước."},
+  {name:"Smithing Table", cat:"Misc", grid:["Iron Ingot","Iron Ingot","","Wood Plank","Wood Plank","","Wood Plank","Wood Plank",""], result:"Smithing Table", count:1, desc:"Nâng cấp đồ Netherite."},
+  {name:"Stonecutter", cat:"Misc", grid:["","Iron Ingot","","Stone","Stone","Stone","","",""], result:"Stonecutter", count:1, desc:"Cắt đá thành nhiều dạng."},
+  {name:"Grindstone", cat:"Misc", grid:["Stick","Stone Slab","Stick","Wood Plank","","Wood Plank","","",""], result:"Grindstone", count:1, desc:"Sửa đồ và xoá phù phép."},
+  {name:"Loom", cat:"Misc", grid:["String","String","","Wood Plank","Wood Plank","","","",""], result:"Loom", count:1, desc:"Dệt cờ với hoa văn."},
+  {name:"Cartography Table", cat:"Misc", grid:["Paper","Paper","","Wood Plank","Wood Plank","","Wood Plank","Wood Plank",""], result:"Cartography Table", count:1, desc:"Sao chép & phóng to bản đồ."},
+  {name:"Fletching Table", cat:"Misc", grid:["Flint","Wood Plank","","Wood Plank","Wood Plank","","Wood Plank","Wood Plank",""], result:"Fletching Table", count:1, desc:"Bàn nghề Fletcher."},
+  {name:"Lectern", cat:"Misc", grid:["Slab","Slab","Slab","","Bookshelf","","","Slab",""], result:"Lectern", count:1, desc:"Bục đặt sách."},
+  {name:"Composter", cat:"Misc", grid:["Wood Slab","","Wood Slab","Wood Slab","","Wood Slab","Wood Slab","Wood Slab","Wood Slab"], result:"Composter", count:1, desc:"Tạo bone meal từ rau củ."},
+  {name:"Bone Meal", cat:"Misc", grid:["Bone","","","","","","","",""], result:"Bone Meal", count:3, desc:"Phân bón - lớn cây ngay."},
+  {name:"Magma Cream", cat:"Misc", grid:["","","","","Blaze Powder","","","Slimeball",""], result:"Magma Cream", count:1, desc:"Cho thuốc Fire Resistance."},
+  {name:"Blaze Powder", cat:"Misc", grid:["Blaze Rod","","","","","","","",""], result:"Blaze Powder", count:2, desc:"Bột blaze."},
+  {name:"Eye of Ender", cat:"Misc", grid:["","","","","Blaze Powder","Ender Pearl","","",""], result:"Eye of Ender", count:1, desc:"Mắt Ender - tìm Stronghold."},
+  {name:"Glass Bottle", cat:"Misc", grid:["","","","Glass","","Glass","","Glass",""], result:"Glass Bottle", count:3, desc:"Chai thủy tinh."},
+  {name:"Iron Nugget", cat:"Misc", grid:["","","","","Iron Ingot","","","",""], result:"Iron Nugget", count:9, desc:"Tách 1 sắt thành 9 nugget."},
+  {name:"Gold Nugget", cat:"Misc", grid:["","","","","Gold Ingot","","","",""], result:"Gold Nugget", count:9, desc:"Tách 1 vàng thành 9 nugget."}
+];
+
+/* ============================================================
+   🧱 RENDER
+   ============================================================ */
+const categories = ["All","Building","Tools","Weapons","Armor","Food","Redstone","Transportation","Combat","Decoration","Misc"];
+let activeCat = "All";
+let query = "";
+
+const catWrap = document.getElementById("categories");
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
+
+categories.forEach(c => {
+  const b = document.createElement("button");
+  b.className = "cat-btn" + (c==="All"?" active":"");
+  b.textContent = c;
+  b.onclick = () => {
+    sndClick();
+    activeCat = c;
+    [...catWrap.children].forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    render();
+  };
+  catWrap.appendChild(b);
+});
+
+function render(){
+  const q = query.trim().toLowerCase();
+  const list = RECIPES.filter(r => {
+    const matchCat = activeCat==="All" || r.cat===activeCat;
+    const matchQ = !q
+      || r.name.toLowerCase().includes(q)
+      || r.result.toLowerCase().includes(q)
+      || (r.desc||"").toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  grid.innerHTML = "";
+  if(list.length===0){
+    grid.innerHTML = `<div class="empty">😢 Không tìm thấy công thức nào...</div>`;
+    return;
+  }
+  list.forEach(r => {
+    const el = document.createElement("div");
+    el.className = "card";
+    el.innerHTML = `
+      <div class="img">${getIcon(r.result)}</div>
+      <div class="name">${r.name}</div>
+      <div class="cat">${r.cat}</div>
+    `;
+    el.addEventListener("mouseenter", sndHover);
+    el.onclick = () => { sndOpen(); openModal(r); };
+    grid.appendChild(el);
+  });
+}
+
+search.addEventListener("input", e => {
+  query = e.target.value;
+  render();
+});
+
+/* ---------- Modal ---------- */
+const modal = document.getElementById("modal");
+const closeBtn = document.getElementById("closeBtn");
+closeBtn.onclick = closeModal;
+modal.addEventListener("click", e => { if(e.target===modal) closeModal(); });
+document.addEventListener("keydown", e => { if(e.key==="Escape" && modal.classList.contains("active")) closeModal(); });
+
+function openModal(r){
+  document.getElementById("m-title").textContent = r.name;
+  document.getElementById("m-desc").textContent = r.desc || "";
+  const mg = document.getElementById("m-grid");
+  mg.innerHTML = "";
+  r.grid.forEach(slot => {
+    const s = document.createElement("div");
+    if(!slot){
+      s.className = "slot empty-slot";
+    } else {
+      s.className = "slot filled";
+      s.title = slot;
+      s.innerHTML = `<div class="ico">${getIcon(slot)}</div><div class="lbl">${shortName(slot)}</div>`;
+    }
+    mg.appendChild(s);
+  });
+  document.getElementById("m-ricon").textContent = getIcon(r.result);
+  document.getElementById("m-rcount").textContent = r.count>1 ? r.count : "";
+  document.getElementById("m-rname").textContent = r.result + (r.count>1?` × ${r.count}`:"");
+  modal.classList.add("active");
+  // Bắt đầu nhạc nền chill khi xem công thức
+  startMusic();
+}
+function closeModal(){
+  if(!modal.classList.contains("active")) return;
+  sndClose();
+  modal.classList.remove("active");
+  // Dừng nhạc khi đóng modal
+  stopMusic();
+}
+
+render();
+</script>
+</body>
+</html>
