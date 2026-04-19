@@ -3,139 +3,111 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🛠️ Minecraft Ultimate Crafting Encyclopedia 1.21+</title>
+<title>🛠️ Minecraft Crafting Encyclopedia Fix</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 <style>
     :root { --primary: #44ffaa; --accent: #ffdd33; --bg: #0a0a1f; --card-bg: rgba(31,42,68,0.85); }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Quicksand',sans-serif;background:var(--bg);color:#f0f0ff;min-height:100vh;overflow-x:hidden;padding-bottom:50px;}
+    body{font-family:'Quicksand',sans-serif;background:var(--bg);color:#f0f0ff;min-height:100vh;padding-bottom:50px;}
     
-    header{text-align:center;padding:40px 20px;background:linear-gradient(to bottom, #15173a, var(--bg));border-bottom:3px solid var(--accent);}
-    header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1rem,4vw,1.8rem);color:var(--accent);text-shadow:3px 3px #000;}
+    header{text-align:center;padding:30px 20px;background:linear-gradient(to bottom, #15173a, var(--bg));border-bottom:3px solid var(--accent);}
+    header h1{font-family:'Press Start 2P',monospace;font-size:clamp(0.8rem,4vw,1.5rem);color:var(--accent);text-shadow:3px 3px #000;}
 
     .search-wrap{position:sticky;top:0;z-index:100;background:var(--bg);padding:15px;text-align:center;}
-    .search-box input{width:90%;max-width:800px;padding:18px;background:#15173a;border:3px solid var(--primary);border-radius:12px;color:#fff;font-size:1.1rem;outline:none;box-shadow:0 4px 20px rgba(0,0,0,0.5);}
+    .search-box input{width:90%;max-width:600px;padding:15px;background:#15173a;border:3px solid var(--primary);border-radius:12px;color:#fff;font-size:1rem;outline:none;}
 
-    .categories{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:15px;}
-    .cat-btn{padding:10px 20px;background:var(--card-bg);border:2px solid #333;color:#fff;border-radius:30px;cursor:pointer;font-weight:bold;transition:0.3s;}
-    .cat-btn.active{background:var(--primary);color:#000;border-color:var(--primary);box-shadow:0 0 15px rgba(68,255,170,0.4);}
+    .recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px;padding:20px;max-width:1200px;margin:0 auto;}
+    .recipe-card{background:var(--card-bg);border:2px solid rgba(255,255,255,0.05);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:0.3s;}
+    .recipe-card:hover{transform:translateY(-5px);border-color:var(--primary);box-shadow:0 10px 20px rgba(68,255,170,0.15);}
+    .recipe-card img{width:70px;height:70px;image-rendering:pixelated;margin-bottom:12px;}
+    .recipe-card div{font-size:0.8rem;font-weight:bold;color:#ccc;text-transform:uppercase;}
 
-    .recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:15px;padding:20px;max-width:1400px;margin:0 auto;}
-    .recipe-card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:15px;text-align:center;cursor:pointer;transition:0.2s;}
-    .recipe-card:hover{transform:scale(1.05);border-color:var(--accent);box-shadow:0 5px 15px rgba(255,221,51,0.2);}
-    .recipe-card img{width:64px;height:64px;image-rendering:pixelated;margin-bottom:10px;}
-    .recipe-card div{font-size:0.75rem;font-weight:bold;text-transform:uppercase;color:#ddd;}
-
-    /* Crafting UI Modal */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px);}
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;}
     .modal-overlay.active{display:flex;}
-    .modal{background:#1f2a44;border:4px solid var(--accent);padding:25px;width:95%;max-width:480px;border-radius:20px;position:relative;}
-    .close-btn{position:absolute;top:10px;right:15px;font-size:2rem;color:var(--accent);cursor:pointer;background:none;border:none;}
-
-    .craft-table{background:#8b8b8b;padding:15px;border:4px solid #373737;margin:20px auto;display:grid;grid-template-columns:repeat(3,60px);gap:5px;width:fit-content;box-shadow:5px 5px 0 #000;}
-    .slot{width:60px;height:60px;background:#8b8b8b;border:3px solid #373737;box-shadow:inset 3px 3px 0 #373737, inset -3px -3px 0 #fff;display:flex;align-items:center;justify-content:center;}
-    .slot img{width:48px;height:48px;image-rendering:pixelated;}
-
-    .res-area{text-align:center;margin-top:15px;}
-    .res-slot{width:90px;height:90px;background:#8b8b8b;border:4px solid var(--primary);margin:0 auto;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:5px 5px 0 #000;}
-    .res-slot img{width:64px;height:64px;image-rendering:pixelated;}
-    .count{position:absolute;bottom:5px;right:8px;font-family:'Press Start 2P';font-size:1rem;color:#fff;text-shadow:2px 2px #000;}
+    .modal{background:#1f2a44;border:4px solid var(--accent);padding:25px;width:95%;max-width:450px;border-radius:20px;text-align:center;}
+    
+    .craft-table{background:#8b8b8b;padding:12px;border:4px solid #373737;margin:20px auto;display:grid;grid-template-columns:repeat(3,55px);gap:5px;width:fit-content;box-shadow:4px 4px 0 #000;}
+    .slot{width:55px;height:55px;background:#8b8b8b;border:2px solid #373737;box-shadow:inset 3px 3px 0 #373737, inset -3px -3px 0 #fff;display:flex;align-items:center;justify-content:center;}
+    .slot img{width:42px;height:42px;image-rendering:pixelated;}
+    .res-slot{width:85px;height:85px;background:#8b8b8b;border:4px solid var(--primary);margin:15px auto;display:flex;align-items:center;justify-content:center;position:relative;}
+    .res-slot img{width:60px;height:60px;image-rendering:pixelated;}
 </style>
 </head>
 <body>
 
 <header>
-    <h1>MINECRAFT CRAFTING BOOK</h1>
-    <p style="margin-top:10px;color:var(--primary);">Hệ thống Chế tạo Toàn diện 1.21 - 1.26</p>
+    <h1>MINECRAFT ENCYCLOPEDIA</h1>
 </header>
 
 <div class="search-wrap">
-    <input type="text" id="searchInput" class="search-box" placeholder="Tìm tên vật phẩm... (Vd: sword, mace, glass, bed)" oninput="render()">
+    <input type="text" id="searchInput" class="search-box" placeholder="Tìm kiếm vật phẩm..." oninput="render()">
 </div>
 
-<div class="categories" id="catBox"></div>
 <div class="recipe-grid" id="recipeGrid"></div>
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
     <div class="modal" onclick="event.stopPropagation()">
-        <button class="close-btn" onclick="closeModal()">×</button>
-        <h2 id="mTitle" style="text-align:center;color:var(--accent);margin-bottom:10px;"></h2>
+        <h2 id="mTitle" style="color:var(--accent);font-family:'Press Start 2P';font-size:0.8rem;"></h2>
         <div class="craft-table" id="mGrid"></div>
-        <div class="res-area">
-            <div style="font-size:2rem;color:var(--primary);">↓</div>
-            <div class="res-slot">
-                <img id="mResImg" src="">
-                <span class="count" id="mCount"></span>
-            </div>
-            <p id="mResName" style="margin-top:15px;font-weight:bold;color:var(--primary);"></p>
-        </div>
+        <div style="font-size:2rem;color:var(--primary);">↓</div>
+        <div class="res-slot"><img id="mResImg" src=""></div>
+        <p id="mResName" style="font-weight:bold;color:var(--primary);"></p>
     </div>
 </div>
 
 <script>
-const ITEM_URL = "https://raw.githubusercontent.com/misode/mcmeta/assets/assets/minecraft/textures/item/";
-const BLOCK_URL = "https://raw.githubusercontent.com/misode/mcmeta/assets/assets/minecraft/textures/block/";
+// Sử dụng kho ảnh dự phòng nếu kho chính lỗi
+const PRIMARY_URL = "https://raw.githubusercontent.com/misode/mcmeta/assets/assets/minecraft/textures/item/";
+const SECONDARY_URL = "https://minecraft.wiki/images/Invicon_"; // Cấu trúc wiki
 
-let MASTER_DB = [];
-let currentCat = 'All';
+let DB = [];
 
-// Hàm lấy ảnh thông minh (tự sửa lỗi nếu không có item thì tìm block)
-function getIcon(id) {
-    return { id: id, url: ITEM_URL + id + ".png" };
-}
+function getImg(id) { return PRIMARY_URL + id + ".png"; }
 
-function handleImgErr(img, id) {
-    if (img.src.includes('/item/')) {
-        img.src = BLOCK_URL + id + ".png";
-    } else {
-        img.src = "https://minecraft.wiki/images/Invicon_Barrier.png";
+// Hàm sửa lỗi ảnh quan trọng nhất
+function fixImg(img, id) {
+    if (img.dataset.tried === "1") {
+        // Thử lần 2: Lấy từ thư mục block
+        img.src = "https://raw.githubusercontent.com/misode/mcmeta/assets/assets/minecraft/textures/block/" + id + ".png";
+        img.dataset.tried = "2";
+    } else if (img.dataset.tried === "2") {
+        // Thử lần 3: Lấy từ nguồn Wiki (đối với các item đặc biệt)
+        let wikiName = id.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
+        img.src = SECONDARY_URL + wikiName + ".png";
+        img.dataset.tried = "3";
+    } else if (!img.dataset.tried) {
+        img.dataset.tried = "1";
     }
 }
 
-// ================== HỆ THỐNG GENERATOR CÔNG THỨC ==================
-function generateRecipes() {
-    MASTER_DB = [];
-    const stick = getIcon('stick');
-    const woods = ['oak','spruce','birch','jungle','acacia','dark_oak','mangrove','cherry','bamboo','pale_oak'];
-    const mats = [
-        {k:'wooden', m:getIcon('oak_planks')}, {k:'stone', m:getIcon('cobblestone')},
-        {k:'iron', m:getIcon('iron_ingot')}, {id:'golden', m:getIcon('gold_ingot')},
-        {k:'diamond', m:getIcon('diamond')}, {k:'netherite', m:getIcon('netherite_ingot')}
+function init() {
+    DB = [];
+    const stick = {id:'stick', url: getImg('stick')};
+    const materials = [
+        {id:'wooden', mat: getImg('oak_planks'), name: 'oak_planks'},
+        {id:'stone', mat: getImg('cobblestone'), name: 'cobblestone'},
+        {id:'iron', mat: getImg('iron_ingot'), name: 'iron_ingot'},
+        {id:'gold', mat: getImg('gold_ingot'), name: 'gold_ingot'},
+        {id:'diamond', mat: getImg('diamond'), name: 'diamond'}
     ];
 
-    // 1. Dụng cụ & Giáp (Full)
-    mats.forEach(mat => {
-        const set = [
-            {id: mat.k+'_sword', c:'Combat', g:[null,mat.m,null, null,mat.m,null, null,stick,null]},
-            {id: mat.k+'_pickaxe', c:'Tools', g:[mat.m,mat.m,mat.m, null,stick,null, null,stick,null]},
-            {id: mat.k+'_axe', c:'Tools', g:[mat.m,mat.m,null, mat.m,stick,null, null,stick,null]},
-            {id: mat.k+'_chestplate', c:'Armor', g:[mat.m,null,mat.m, mat.m,mat.m,mat.m, mat.m,mat.m,mat.m]}
-        ];
-        set.forEach(s => { s.qty=1; MASTER_DB.push(s); });
+    materials.forEach(m => {
+        let matIcon = {id: m.name, url: m.mat};
+        // Sword
+        DB.push({id: m.id+'_sword', grid:[null,matIcon,null, null,matIcon,null, null,stick,null]});
+        // Pickaxe
+        DB.push({id: m.id+'_pickaxe', grid:[matIcon,matIcon,matIcon, null,stick,null, null,stick,null]});
+        // Axe
+        DB.push({id: m.id+'_axe', grid:[matIcon,matIcon,null, matIcon,stick,null, null,stick,null]});
+        // Chestplate
+        DB.push({id: m.id+'_chestplate', grid:[matIcon,null,matIcon, matIcon,matIcon,matIcon, matIcon,matIcon,matIcon]});
     });
+    
+    // Thêm các món Redstone/Misc
+    DB.push({id:'shield', grid:[{id:'oak_planks',url:getImg('oak_planks')},{id:'iron_ingot',url:getImg('iron_ingot')},{id:'oak_planks',url:getImg('oak_planks')},{id:'oak_planks',url:getImg('oak_planks')},{id:'oak_planks',url:getImg('oak_planks')},{id:'oak_planks',url:getImg('oak_planks')},null,{id:'oak_planks',url:getImg('oak_planks')},null]});
 
-    // 2. Hệ sinh thái Gỗ (Cho mọi loại gỗ)
-    woods.forEach(w => {
-        const pk = getIcon(w+'_planks');
-        const woodSet = [
-            {id: w+'_door', c:'Build', g:[pk,pk,null, pk,pk,null, pk,pk,null], qty:3},
-            {id: w+'_fence', c:'Build', g:[null,null,null, pk,stick,pk, pk,stick,pk], qty:3},
-            {id: w+'_boat', c:'Misc', g:[null,null,null, pk,null,pk, pk,pk,pk], qty:1},
-            {id: w+'_trapdoor', c:'Build', g:[null,null,null, pk,pk,pk, pk,pk,pk], qty:2}
-        ];
-        woodSet.forEach(s => MASTER_DB.push(s));
-    });
-
-    // 3. Công thức đặc thù 1.21+ & Redstone
-    const specials = [
-        {id:'mace', c:'Combat', g:[null,null,null, null,getIcon('heavy_core'),null, null,getIcon('breeze_rod'),null], qty:1},
-        {id:'crafter', c:'Redstone', g:[getIcon('iron_ingot'),getIcon('iron_ingot'),getIcon('iron_ingot'), getIcon('iron_ingot'),getIcon('crafting_table'),getIcon('iron_ingot'), getIcon('redstone'),getIcon('dropper'),getIcon('redstone')], qty:1},
-        {id:'copper_bulb', c:'Build', g:[getIcon('copper_ingot'),getIcon('copper_ingot'),getIcon('copper_ingot'), getIcon('copper_ingot'),getIcon('blaze_rod'),getIcon('copper_ingot'), getIcon('copper_ingot'),getIcon('redstone'),getIcon('copper_ingot')], qty:4},
-        {id:'wolf_armor', c:'Armor', g:[getIcon('armadillo_scute'),null,null, getIcon('armadillo_scute'),getIcon('armadillo_scute'),getIcon('armadillo_scute'), getIcon('armadillo_scute'),null,getIcon('armadillo_scute')], qty:1},
-        {id:'shield', c:'Combat', g:[getIcon('oak_planks'),getIcon('iron_ingot'),getIcon('oak_planks'), getIcon('oak_planks'),getIcon('oak_planks'),getIcon('oak_planks'), null,getIcon('oak_planks'),null], qty:1},
-        {id:'tnt', c:'Combat', g:[getIcon('sand'),getIcon('gunpowder'),getIcon('sand'), getIcon('gunpowder'),getIcon('sand'),getIcon('gunpowder'), getIcon('sand'),getIcon('gunpowder'),getIcon('sand')], qty:1}
-    ];
-    specials.forEach(s => MASTER_DB.push(s));
+    render();
 }
 
 function render() {
@@ -143,15 +115,10 @@ function render() {
     const search = document.getElementById('searchInput').value.toLowerCase();
     grid.innerHTML = '';
 
-    const filtered = MASTER_DB.filter(i => 
-        (currentCat === 'All' || i.c === currentCat) && 
-        (i.id.replace(/_/g, ' ').includes(search))
-    );
-
-    filtered.forEach(item => {
+    DB.filter(i => i.id.includes(search)).forEach(item => {
         const card = document.createElement('div');
         card.className = 'recipe-card';
-        card.innerHTML = `<img src="${item.g.find(x => x !== null).url}" onerror="handleImgErr(this, '${item.id}')"><div>${item.id.replace(/_/g, ' ')}</div>`;
+        card.innerHTML = `<img src="${getImg(item.id)}" onerror="fixImg(this, '${item.id}')"><div>${item.id.replace(/_/g, ' ')}</div>`;
         card.onclick = () => openModal(item);
         grid.appendChild(card);
     });
@@ -160,17 +127,16 @@ function render() {
 function openModal(item) {
     document.getElementById('mTitle').innerText = item.id.replace(/_/g, ' ').toUpperCase();
     document.getElementById('mResName').innerText = item.id.replace(/_/g, ' ');
-    document.getElementById('mCount').innerText = item.qty > 1 ? item.qty : '';
-    const img = document.getElementById('mResImg');
-    img.src = ITEM_URL + item.id + ".png";
-    img.onerror = () => handleImgErr(img, item.id);
-
+    const resImg = document.getElementById('mResImg');
+    resImg.src = getImg(item.id);
+    resImg.dataset.tried = ""; 
+    
     const gBox = document.getElementById('mGrid');
     gBox.innerHTML = '';
-    item.g.forEach(slot => {
+    item.grid.forEach(slot => {
         const div = document.createElement('div');
         div.className = 'slot';
-        if(slot) div.innerHTML = `<img src="${slot.url}" onerror="handleImgErr(this, '${slot.id}')">`;
+        if(slot) div.innerHTML = `<img src="${slot.url}" onerror="fixImg(this, '${slot.id}')">`;
         gBox.appendChild(div);
     });
     document.getElementById('modalOverlay').classList.add('active');
@@ -178,24 +144,7 @@ function openModal(item) {
 
 function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
 
-// Khởi tạo UI
-const cats = ['All', 'Build', 'Combat', 'Tools', 'Armor', 'Redstone', 'Misc'];
-const catBox = document.getElementById('catBox');
-cats.forEach(c => {
-    const btn = document.createElement('button');
-    btn.className = 'cat-btn' + (c === 'All' ? ' active' : '');
-    btn.innerText = c;
-    btn.onclick = () => {
-        currentCat = c;
-        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        render();
-    };
-    catBox.appendChild(btn);
-});
-
-generateRecipes();
-render();
+init();
 </script>
 </body>
 </html>
