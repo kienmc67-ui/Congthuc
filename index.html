@@ -8,7 +8,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Quicksand',sans-serif;background:linear-gradient(135deg,#0a0a1f,#15173a,#1f2a44);color:#f0f0ff;min-height:100vh;padding-bottom:70px;}
+body{font-family:'Quicksand',sans-serif;background:linear-gradient(135deg,#0a0a1f,#15173a,#1f2a44);color:#f0f0ff;min-height:100vh;padding-bottom:80px;}
 header{text-align:center;padding:40px 20px 20px;}
 header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.6rem,5vw,2.6rem);color:#ffdd33;text-shadow:0 0 15px rgba(255,221,51,.6);}
 .search-wrap{padding:10px 20px 20px;text-align:center;}
@@ -29,10 +29,10 @@ header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.6rem,5vw,2.6r
 .craft-grid{display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:6px;margin:20px auto;background:#3d2814;padding:14px;border:4px solid #2a1a08;border-radius:10px;width:fit-content;}
 .craft-slot{width:54px;height:54px;background:#0a0a1f;border:2px solid #111;display:flex;align-items:center;justify-content:center;position:relative;}
 .craft-slot img{width:46px;height:46px;image-rendering:pixelated;}
-.craft-slot .count{position:absolute;bottom:2px;right:4px;font-size:0.75rem;color:#fff;text-shadow:1px 1px 0 #000;}
+.craft-slot .count{position:absolute;bottom:3px;right:5px;font-family:'Press Start 2P',font-size:0.75rem;color:#fff;text-shadow:1px 1px 2px #000;}
 .result-slot{width:82px;height:82px;border:4px solid #ffdd33;border-radius:10px;background:#0a0a1f;display:flex;align-items:center;justify-content:center;margin:20px auto;position:relative;}
 .result-slot img{width:66px;height:66px;image-rendering:pixelated;}
-.result-slot .count{position:absolute;bottom:4px;right:8px;font-size:1rem;color:#fff;text-shadow:1px 1px 0 #000;}
+.result-slot .count{position:absolute;bottom:6px;right:8px;font-family:'Press Start 2P',font-size:1.1rem;color:#fff;text-shadow:1px 1px 2px #000;}
 .audio-ctrl{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:rgba(31,42,68,.9);border:3px solid #ffdd33;color:#ffdd33;font-size:1.6rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:200;}
 </style>
 </head>
@@ -45,7 +45,7 @@ header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.6rem,5vw,2.6r
 
 <div class="search-wrap">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Tìm công thức... (mace, repeater, stick, bread...)" />
+    <input type="text" id="searchInput" placeholder="Tìm công thức... (mace, stick, repeater, bread...)" />
   </div>
 </div>
 
@@ -97,7 +97,7 @@ const I = n => ({icon: getIcon(n), name: n});
 
 let RECIPES = [];
 
-// Mace
+// === MACE ===
 RECIPES.push({
   id:'mace', name:'Mace', cat:'Combat',
   icon: getIcon('mace'),
@@ -106,7 +106,7 @@ RECIPES.push({
   count: 1
 });
 
-// Stick (đã sửa đúng vị trí + count)
+// === STICK (đã fix đúng) ===
 RECIPES.push({
   id:'stick', name:'Stick', cat:'Misc',
   icon: getIcon('stick'),
@@ -115,7 +115,7 @@ RECIPES.push({
   count: 4
 });
 
-// Repeater (đã sửa đúng)
+// === REPEATER (đã fix đúng) ===
 RECIPES.push({
   id:'repeater', name:'Repeater', cat:'Redstone',
   icon: getIcon('repeater'),
@@ -124,7 +124,7 @@ RECIPES.push({
   count: 1
 });
 
-// Wood family (một phần)
+// Wood family
 const woods = ['oak','spruce','birch','jungle','acacia','dark_oak','mangrove','cherry'];
 const woodLabel = {oak:'Oak',spruce:'Spruce',birch:'Birch',jungle:'Jungle',acacia:'Acacia',dark_oak:'Dark Oak',mangrove:'Mangrove',cherry:'Cherry'};
 
@@ -134,23 +134,33 @@ woods.forEach(w => {
   const lg = I(w + '_log');
   RECIPES.push({id:w+'_planks',name:lbl+' Planks',cat:'Build',icon:getIcon(w+'_planks'),desc:'Từ log',grid:[null,null,null,null,lg,null,null,null,null],count:4});
   RECIPES.push({id:w+'_door',name:lbl+' Door',cat:'Build',icon:getIcon(w+'_door'),desc:'Cửa gỗ',grid:[plk,plk,null,plk,plk,null,plk,plk,null],count:3});
+  RECIPES.push({id:w+'_trapdoor',name:lbl+' Trapdoor',cat:'Build',icon:getIcon(w+'_trapdoor'),desc:'Cửa sập',grid:[plk,plk,plk,plk,plk,plk,null,null,null],count:2});
 });
 
-// Tools & Combat
+// Combat & Tools
 const stickItem = I('stick');
-const tiers = [{lbl:'Wooden', mat:I('oak_planks')},{lbl:'Stone', mat:I('cobblestone')},{lbl:'Iron', mat:I('iron_ingot')},{lbl:'Diamond', mat:I('diamond')}];
+const tiers = [
+  {lbl:'Wooden', mat:I('oak_planks')},
+  {lbl:'Stone', mat:I('cobblestone')},
+  {lbl:'Iron', mat:I('iron_ingot')},
+  {lbl:'Diamond', mat:I('diamond')}
+];
 
 tiers.forEach(t => {
   RECIPES.push({id:t.lbl.toLowerCase()+'_sword',name:t.lbl+' Sword',cat:'Combat',icon:getIcon(t.lbl.toLowerCase()+'_sword'),desc:`Kiếm ${t.lbl}`,grid:[null,t.mat,null,null,t.mat,null,null,stickItem,null],count:1});
 });
 
-// Redstone thêm
+// Redstone
 RECIPES.push({id:'redstone_torch',name:'Redstone Torch',cat:'Redstone',icon:getIcon('redstone_torch'),desc:'Đuốc redstone',grid:[null,null,null,null,I('redstone'),null,null,I('stick'),null],count:1});
 
 // Food
 RECIPES.push({id:'bread',name:'Bread',cat:'Food',icon:getIcon('bread'),desc:'3 Wheat',grid:[null,null,null,I('wheat'),I('wheat'),I('wheat'),null,null,null],count:1});
 
-// ========== RENDER ==========
+// Build
+RECIPES.push({id:'furnace',name:'Furnace',cat:'Build',icon:getIcon('furnace'),desc:'8 Cobblestone',grid:[I('cobblestone'),I('cobblestone'),I('cobblestone'),I('cobblestone'),null,I('cobblestone'),I('cobblestone'),I('cobblestone'),I('cobblestone')],count:1});
+RECIPES.push({id:'chest',name:'Chest',cat:'Build',icon:getIcon('chest'),desc:'8 Planks',grid:[I('oak_planks'),I('oak_planks'),I('oak_planks'),I('oak_planks'),null,I('oak_planks'),I('oak_planks'),I('oak_planks'),I('oak_planks')],count:1});
+
+// ========== RENDER & MODAL ==========
 const CATS = ['All','Build','Tools','Combat','Armor','Food','Redstone','Misc'];
 let currentCat = 'All';
 let currentSearch = '';
@@ -198,7 +208,7 @@ function renderGrid() {
 
 function showModal(r) {
   document.getElementById('modalTitle').textContent = r.name;
-  document.getElementById('modalDesc').textContent = r.desc;
+  document.getElementById('modalDesc').textContent = r.desc || '';
   document.getElementById('resultName').textContent = r.name;
   document.getElementById('resultCount').textContent = r.count > 1 ? r.count : '';
 
@@ -237,7 +247,7 @@ document.getElementById('audioCtrl').onclick = function() {
   this.textContent = this.textContent === '🔊' ? '🔇' : '🔊';
 };
 
-// Khởi động
+// Khởi động - mở Stick để test ngay
 renderGrid();
 window.addEventListener('load', () => {
   const stickRecipe = RECIPES.find(r => r.id === 'stick');
