@@ -3,205 +3,210 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🛠️ Minecraft Crafting Recipes — Bedrock 1.21+</title>
+<title>🛠️ Minecraft Crafting Recipes — Bedrock 1.21.11</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 <style>
-/* Giữ nguyên toàn bộ CSS cũ của bạn (tôi không thay đổi phần này để giữ giao diện) */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Quicksand',sans-serif;background:linear-gradient(135deg,#0a0a1f 0%,#15173a 50%,#1f2a44 100%);background-attachment:fixed;color:#f0f0ff;min-height:100vh;overflow-x:hidden;padding-bottom:40px;}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 20% 30%,rgba(255,221,51,.08),transparent 40%),radial-gradient(circle at 80% 70%,rgba(120,255,150,.06),transparent 40%);}
-img{image-rendering:pixelated;image-rendering:crisp-edges;}
-header{position:relative;z-index:1;text-align:center;padding:50px 20px 30px;}
-header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.4rem,4vw,2.4rem);color:#ffdd33;text-shadow:0 0 10px rgba(255,221,51,.5),3px 3px 0 #0a0a1f;margin-bottom:14px;letter-spacing:1px;animation:glow 3s ease-in-out infinite alternate;}
-@keyframes glow{from{text-shadow:0 0 10px rgba(255,221,51,.5),3px 3px 0 #0a0a1f}to{text-shadow:0 0 20px rgba(255,221,51,.9),0 0 30px rgba(255,221,51,.4),3px 3px 0 #0a0a1f}}
-header p.subtitle{font-size:clamp(.85rem,2vw,1.05rem);color:#b8ffd0;opacity:.9;letter-spacing:.5px;}
-.search-wrap{position:relative;z-index:1;display:flex;justify-content:center;padding:10px 20px 25px;}
-.search-box{width:100%;max-width:560px;position:relative;}
-.search-box input{width:100%;padding:16px 22px 16px 52px;background:rgba(10,10,31,.7);border:2px solid rgba(255,221,51,.3);border-radius:50px;color:#fff;font-size:1rem;font-family:inherit;outline:none;transition:all .3s;backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,.3);}
-.search-box input::placeholder{color:#8b8bb0}
-.search-box input:focus{border-color:#ffdd33;box-shadow:0 0 0 4px rgba(255,221,51,.15),0 4px 25px rgba(255,221,51,.2);}
-.search-box::before{content:"🔍";position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:1.2rem;}
-.categories{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:0 20px 30px;max-width:1200px;margin:0 auto;}
-.cat-btn{padding:10px 18px;background:rgba(31,42,68,.6);border:2px solid rgba(255,221,51,.2);color:#f0f0ff;border-radius:25px;font-family:inherit;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .25s;backdrop-filter:blur(8px);}
-.cat-btn:hover{background:rgba(255,221,51,.15);border-color:#ffdd33;transform:translateY(-2px);box-shadow:0 4px 15px rgba(255,221,51,.2);}
-.cat-btn.active{background:linear-gradient(135deg,#ffdd33,#ffb700);color:#0a0a1f;border-color:#ffdd33;box-shadow:0 4px 20px rgba(255,221,51,.4);}
-.grid-wrap{max-width:1400px;margin:0 auto;padding:0 20px;}
-.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:18px;}
-.recipe-card{background:linear-gradient(145deg,rgba(31,42,68,.7),rgba(15,23,42,.7));border:2px solid rgba(255,221,51,.15);border-radius:16px;padding:18px 12px;text-align:center;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(10px);position:relative;overflow:hidden;}
-.recipe-card:hover{transform:translateY(-6px) scale(1.03);border-color:#ffdd33;box-shadow:0 10px 30px rgba(255,221,51,.25);}
-.recipe-card .icon{width:64px;height:64px;margin:0 auto 12px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4));transition:transform .3s;}
-.recipe-card:hover .icon{transform:scale(1.15) rotate(-5deg)}
-.recipe-card .name{font-weight:700;font-size:.95rem;color:#fff;margin-bottom:4px;}
-.recipe-card .cat{font-size:.75rem;color:#b8ffd0;opacity:.75;}
-.no-results{text-align:center;padding:40px;color:#8b8bb0;font-size:1.1rem;grid-column:1/-1;}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;opacity:0;transition:opacity .3s;}
-.modal-overlay.active{display:flex;opacity:1}
-.modal{background:linear-gradient(145deg,#1f2a44,#15173a);border:3px solid #ffdd33;border-radius:20px;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;padding:30px 25px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6);}
-.modal-close{position:absolute;top:14px;right:14px;width:38px;height:38px;background:rgba(255,80,80,.2);border:2px solid rgba(255,80,80,.5);color:#ff8080;border-radius:50%;font-size:1.2rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.modal-close:hover{background:#ff5555;color:#fff;transform:rotate(90deg);}
-.modal h2{font-family:'Press Start 2P',monospace;font-size:1.1rem;color:#ffdd33;margin-bottom:10px;}
-.modal .desc{color:#b8ffd0;font-size:.95rem;margin-bottom:20px;line-height:1.5;}
-.craft-grid{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(3,56px);gap:4px;padding:10px;background:linear-gradient(145deg,#5a3d22,#3d2814);border:3px solid #2a1a08;border-radius:8px;}
-.craft-slot{width:56px;height:56px;background:linear-gradient(145deg,#1a1a2e,#0a0a1f);border:2px solid #000;border-radius:3px;display:flex;align-items:center;justify-content:center;position:relative;}
-.craft-slot img{width:42px;height:42px}
-.arrow{font-size:2.2rem;color:#ffdd33;animation:pulse 1.5s ease-in-out infinite;}
-@keyframes pulse{50%{transform:scale(1.15)}}
-.result-slot{width:80px;height:80px;background:linear-gradient(145deg,#1a1a2e,#0a0a1f);border:3px solid #ffdd33;border-radius:6px;display:flex;align-items:center;justify-content:center;}
-.result-slot img{width:62px;height:62px;}
-.audio-ctrl{position:fixed;bottom:20px;right:20px;z-index:50;width:50px;height:50px;border-radius:50%;background:rgba(31,42,68,.85);border:2px solid #ffdd33;color:#ffdd33;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+body{font-family:'Quicksand',sans-serif;background:linear-gradient(135deg,#0a0a1f,#15173a,#1f2a44);color:#f0f0ff;min-height:100vh;padding-bottom:70px;}
+header{text-align:center;padding:40px 20px 20px;}
+header h1{font-family:'Press Start 2P',monospace;font-size:clamp(1.6rem,5vw,2.6rem);color:#ffdd33;text-shadow:0 0 15px rgba(255,221,51,.6);}
+.search-wrap{padding:10px 20px 20px;text-align:center;}
+.search-box{max-width:560px;margin:0 auto;position:relative;}
+.search-box input{width:100%;padding:16px 55px;background:rgba(10,10,31,.85);border:2px solid #ffdd33;border-radius:50px;color:#fff;outline:none;font-size:1.05rem;}
+.categories{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:0 15px 25px;}
+.cat-btn{padding:9px 18px;background:rgba(31,42,68,.75);border:2px solid rgba(255,221,51,.3);color:#fff;border-radius:30px;font-weight:700;cursor:pointer;transition:.2s;}
+.cat-btn.active{background:#ffdd33;color:#0a0a1f;border-color:#ffdd33;}
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:16px;padding:0 15px;}
+.recipe-card{background:rgba(31,42,68,.85);border:2px solid rgba(255,221,51,.25);border-radius:14px;padding:12px;text-align:center;cursor:pointer;transition:.3s;}
+.recipe-card:hover{transform:scale(1.06);border-color:#ffdd33;box-shadow:0 10px 25px rgba(255,221,51,.3);}
+.recipe-card img{width:70px;height:70px;margin-bottom:8px;image-rendering:pixelated;}
+.no-results{grid-column:1/-1;text-align:center;padding:50px;color:#aaa;font-size:1.1rem;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:100;padding:15px;}
+.modal-overlay.active{display:flex;}
+.modal{background:#1f2a44;border:3px solid #ffdd33;border-radius:18px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:25px;position:relative;}
+.modal-close{position:absolute;top:12px;right:12px;width:38px;height:38px;background:rgba(255,80,80,.25);color:#ff8080;border:2px solid #ff8080;border-radius:50%;font-size:1.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.craft-grid{display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:6px;margin:20px auto;background:#3d2814;padding:14px;border:4px solid #2a1a08;border-radius:10px;width:fit-content;}
+.craft-slot{width:54px;height:54px;background:#0a0a1f;border:2px solid #111;display:flex;align-items:center;justify-content:center;}
+.craft-slot img{width:46px;height:46px;image-rendering:pixelated;}
+.result-slot{width:82px;height:82px;border:4px solid #ffdd33;border-radius:10px;background:#0a0a1f;display:flex;align-items:center;justify-content:center;margin:20px auto;}
+.result-slot img{width:66px;height:66px;image-rendering:pixelated;}
+.audio-ctrl{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:rgba(31,42,68,.9);border:3px solid #ffdd33;color:#ffdd33;font-size:1.6rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:200;}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🛠️ Minecraft Crafting Recipes</h1>
-  <p class="subtitle">1.21+ • Bedrock Edition</p>
+  <h1>🛠️ Minecraft Recipes</h1>
+  <p style="color:#b8ffd0;opacity:0.9;">Bedrock 1.21.11 • Full (Redstone • Food • Combat • Build • Armor)</p>
 </header>
 
 <div class="search-wrap">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Tìm công thức... (vd: mace, sword, pickaxe)" />
+    <input type="text" id="searchInput" placeholder="Tìm công thức... (mace, repeater, bread, sword...)" />
   </div>
 </div>
 
 <div class="categories" id="categories"></div>
-
-<div class="grid-wrap">
-  <div class="recipe-grid" id="recipeGrid"></div>
-</div>
+<div class="recipe-grid" id="recipeGrid"></div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <button class="modal-close" id="modalClose">✕</button>
-    <h2 id="modalTitle"></h2>
-    <p class="desc" id="modalDesc"></p>
-    <div id="smithingNote"></div>
-    <div class="craft-layout">
-      <div class="craft-grid" id="craftGrid"></div>
-      <div class="arrow">→</div>
-      <div>
-        <div class="result-slot">
-          <img id="resultImg" src="" alt="" />
-          <span class="count" id="resultCount"></span>
-        </div>
-      </div>
+    <h2 id="modalTitle" style="color:#ffdd33;text-align:center;margin:10px 0;"></h2>
+    <p id="modalDesc" style="text-align:center;color:#b8ffd0;margin-bottom:20px;line-height:1.5;"></p>
+    
+    <div class="craft-grid" id="craftGrid"></div>
+    
+    <div style="text-align:center;font-size:2.4rem;color:#ffdd33;margin:10px 0;">→</div>
+    
+    <div class="result-slot">
+      <img id="resultImg" src="" alt="">
     </div>
-    <div class="result-name" id="resultName"></div>
+    <div id="resultName" style="text-align:center;color:#ffdd33;font-weight:bold;font-size:1.2rem;"></div>
   </div>
 </div>
 
-<button class="audio-ctrl" id="audioCtrl" title="Bật/tắt nhạc">🔊</button>
-
-<audio id="bgMusic" loop><source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1718e3b7d8.mp3" type="audio/mpeg"></audio>
-<audio id="clickSfx" preload="auto"><source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_478275f73e.mp3" type="audio/mpeg"></audio>
+<button class="audio-ctrl" id="audioCtrl">🔊</button>
 
 <script>
-// ========== ICON SYSTEM - SỬA HOÀN CHỈNH ==========
+// ================== ICON SYSTEM (cải thiện cho 1.21.11) ==================
 const ICON_BASE = "https://minecraft.wiki/images/";
 
-function icon(name) {
+function getIcon(name) {
   const special = {
     mace: "Mace_JE1_BE1.png",
     heavy_core: "Heavy_Core_JE1_BE1.png",
     breeze_rod: "Breeze_Rod_JE1_BE1.png",
-    netherite_upgrade_smithing_template: "Netherite_Upgrade_Smithing_Template_JE2_BE2.png"
+    netherite_upgrade_smithing_template: "Netherite_Upgrade_Smithing_Template_JE2_BE2.png",
+    wind_charge: "Wind_Charge_JE1_BE1.png",
+    repeater: "Redstone_Repeater.png",
+    comparator: "Redstone_Comparator.png",
+    piston: "Piston.png",
+    sticky_piston: "Sticky_Piston.png"
   };
   if (special[name]) return ICON_BASE + special[name];
 
-  let file = name.replace(/_/g, ' ')
-                 .split(' ')
-                 .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-                 .join('_') + ".png";
+  let file = name.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('_') + ".png";
   return ICON_BASE + file;
 }
 
-const I = (n) => ({icon: icon(n), name: n});
+const I = n => ({icon: getIcon(n), name: n});
 
 let RECIPES = [];
 
-// Mace - ĐÃ SỬA ĐÚNG CÔNG THỨC
+// Mace (đúng công thức)
 RECIPES.push({
-  id: 'mace',
-  name: 'Mace',
-  cat: 'Weapons',
-  icon: icon('mace'),
-  desc: 'Vũ khí mới trong 1.21 — Heavy Core + Breeze Rod. Sát thương cực lớn khi smash từ độ cao.',
-  grid: [
-    null, null, null,
-    null, I('heavy_core'), null,
-    null, I('breeze_rod'), null
-  ],
+  id:'mace', name:'Mace', cat:'Combat',
+  icon: getIcon('mace'),
+  desc: 'Vũ khí mới 1.21.11 — Heavy Core + Breeze Rod. Sát thương cực mạnh khi smash từ cao.',
+  grid: [null, null, null, null, I('heavy_core'), null, null, I('breeze_rod'), null],
   count: 1
 });
 
-// Wood family (giữ nguyên logic cũ)
-const W = ['oak','spruce','birch','jungle','acacia','dark_oak','mangrove','cherry','bamboo','crimson','warped'];
-const WOODS_LABEL = {oak:'Oak',spruce:'Spruce',birch:'Birch',jungle:'Jungle',acacia:'Acacia',dark_oak:'Dark Oak',mangrove:'Mangrove',cherry:'Cherry',bamboo:'Bamboo',crimson:'Crimson',warped:'Warped'};
+// Wood family + Build
+const woods = ['oak','spruce','birch','jungle','acacia','dark_oak','mangrove','cherry','bamboo','crimson','warped'];
+const woodLabel = {oak:'Oak',spruce:'Spruce',birch:'Birch',jungle:'Jungle',acacia:'Acacia',dark_oak:'Dark Oak',mangrove:'Mangrove',cherry:'Cherry',bamboo:'Bamboo',crimson:'Crimson',warped:'Warped'};
 
-W.forEach(w => {
-  const lbl = WOODS_LABEL[w];
+woods.forEach(w => {
+  const lbl = woodLabel[w];
   const plk = I(w + '_planks');
-  const logItem = I(w + '_log');
-
-  RECIPES.push({id:w+'_planks',name:lbl+' Planks',cat:'Building',icon:icon(w+'_planks'),desc:`Chế từ ${lbl} Log.`,grid:[null,null,null,null,logItem,null,null,null,null],count:4});
-
-  if(w === 'oak'){
-    RECIPES.push({id:'stick',name:'Stick',cat:'Misc',icon:icon('stick'),desc:'2 planks → 4 sticks.',grid:[null,plk,null,null,plk,null,null,null,null],count:4});
-    RECIPES.push({id:'crafting_table',name:'Crafting Table',cat:'Misc',icon:icon('crafting_table'),desc:'4 planks bất kỳ.',grid:[plk,plk,null,plk,plk,null,null,null,null],count:1});
-  }
-
-  RECIPES.push({id:w+'_door',name:lbl+' Door',cat:'Building',icon:icon(w+'_door'),desc:`Cửa ${lbl}.`,grid:[plk,plk,null,plk,plk,null,plk,plk,null],count:3});
-  RECIPES.push({id:w+'_trapdoor',name:lbl+' Trapdoor',cat:'Building',icon:icon(w+'_trapdoor'),desc:`Cửa sập ${lbl}.`,grid:[plk,plk,plk,plk,plk,plk,null,null,null],count:2});
-  RECIPES.push({id:w+'_slab',name:lbl+' Slab',cat:'Building',icon:icon(w+'_slab'),desc:`Slab ${lbl}.`,grid:[null,null,null,null,null,null,plk,plk,plk],count:6});
-  RECIPES.push({id:w+'_stairs',name:lbl+' Stairs',cat:'Building',icon:icon(w+'_stairs'),desc:`Cầu thang ${lbl}.`,grid:[plk,null,null,plk,plk,null,plk,plk,plk],count:4});
+  const lg = I(w + '_log');
+  RECIPES.push({id:w+'_planks',name:lbl+' Planks',cat:'Build',icon:getIcon(w+'_planks'),desc:'Từ log',grid:[null,null,null,null,lg,null,null,null,null],count:4});
+  RECIPES.push({id:w+'_door',name:lbl+' Door',cat:'Build',icon:getIcon(w+'_door'),desc:'Cửa gỗ',grid:[plk,plk,null,plk,plk,null,plk,plk,null],count:3});
+  RECIPES.push({id:w+'_trapdoor',name:lbl+' Trapdoor',cat:'Build',icon:getIcon(w+'_trapdoor'),desc:'Cửa sập',grid:[plk,plk,plk,plk,plk,plk,null,null,null],count:2});
+  RECIPES.push({id:w+'_stairs',name:lbl+' Stairs',cat:'Build',icon:getIcon(w+'_stairs'),desc:'Cầu thang',grid:[plk,null,null,plk,plk,null,plk,plk,plk],count:4});
+  RECIPES.push({id:w+'_slab',name:lbl+' Slab',cat:'Build',icon:getIcon(w+'_slab'),desc:'Slab',grid:[null,null,null,null,null,null,plk,plk,plk],count:6});
 });
 
-// Thêm một số recipe quan trọng khác (Tools, Sword, v.v.)
-const stick = I('stick');
-const toolMats = [
-  {key:'wooden', mat:I('oak_planks'), lbl:'Wooden'},
-  {key:'stone', mat:I('cobblestone'), lbl:'Stone'},
-  {key:'iron', mat:I('iron_ingot'), lbl:'Iron'}
+// Stick, Crafting Table, Boat
+RECIPES.push({id:'stick',name:'Stick',cat:'Misc',icon:getIcon('stick'),desc:'2 planks = 4 sticks',grid:[null,I('oak_planks'),null,null,I('oak_planks'),null,null,null,null],count:4});
+RECIPES.push({id:'crafting_table',name:'Crafting Table',cat:'Build',icon:getIcon('crafting_table'),desc:'4 planks',grid:[I('oak_planks'),I('oak_planks'),null,I('oak_planks'),I('oak_planks'),null,null,null,null],count:1});
+
+// Tools & Combat (PvP)
+const stickItem = I('stick');
+const tiers = [
+  {lbl:'Wooden', mat:I('oak_planks')},
+  {lbl:'Stone', mat:I('cobblestone')},
+  {lbl:'Iron', mat:I('iron_ingot')},
+  {lbl:'Golden', mat:I('gold_ingot')},
+  {lbl:'Diamond', mat:I('diamond')}
 ];
 
-toolMats.forEach(t => {
-  RECIPES.push({id:t.key+'_sword',name:t.lbl+' Sword',cat:'Weapons',icon:icon(t.key+'_sword'),desc:`Kiếm ${t.lbl}.`,grid:[null,t.mat,null,null,t.mat,null,null,stick,null],count:1});
-  RECIPES.push({id:t.key+'_pickaxe',name:t.lbl+' Pickaxe',cat:'Tools',icon:icon(t.key+'_pickaxe'),desc:`Cuốc ${t.lbl}.`,grid:[t.mat,t.mat,t.mat,null,stick,null,null,stick,null],count:1});
+tiers.forEach(t => {
+  RECIPES.push({id:t.lbl.toLowerCase()+'_sword',name:t.lbl+' Sword',cat:'Combat',icon:getIcon(t.lbl.toLowerCase()+'_sword'),desc:`Kiếm ${t.lbl} (PvP)`,grid:[null,t.mat,null,null,t.mat,null,null,stickItem,null],count:1});
+  RECIPES.push({id:t.lbl.toLowerCase()+'_axe',name:t.lbl+' Axe',cat:'Combat',icon:getIcon(t.lbl.toLowerCase()+'_axe'),desc:`Rìu ${t.lbl}`,grid:[t.mat,t.mat,null,t.mat,stickItem,null,null,stickItem,null],count:1});
 });
 
-// ========== RENDER & MODAL ==========
-const CATS = ['All','Building','Tools','Weapons','Armor','Food','Redstone','Transportation','Decoration','Misc'];
+RECIPES.push({id:'bow',name:'Bow',cat:'Combat',icon:getIcon('bow'),desc:'Cung bắn tên',grid:[null,I('stick'),I('string'),I('stick'),null,I('string'),null,I('stick'),I('string')],count:1});
+RECIPES.push({id:'arrow',name:'Arrow',cat:'Combat',icon:getIcon('arrow'),desc:'Mũi tên',grid:[null,I('flint'),null,null,I('stick'),null,null,I('feather'),null],count:4});
+RECIPES.push({id:'shield',name:'Shield',cat:'Combat',icon:getIcon('shield'),desc:'Khiên chắn đòn',grid:[I('oak_planks'),I('iron_ingot'),I('oak_planks'),I('oak_planks'),I('oak_planks'),I('oak_planks'),null,I('oak_planks'),null],count:1});
+RECIPES.push({id:'tnt',name:'TNT',cat:'Combat',icon:getIcon('tnt'),desc:'Thuốc nổ (PvP)',grid:[I('gunpowder'),I('sand'),I('gunpowder'),I('sand'),I('gunpowder'),I('sand'),I('gunpowder'),I('sand'),I('gunpowder')],count:1});
+
+// Armor
+const armorMats = [
+  {lbl:'Leather', mat:I('leather')},
+  {lbl:'Iron', mat:I('iron_ingot')},
+  {lbl:'Golden', mat:I('gold_ingot')},
+  {lbl:'Diamond', mat:I('diamond')}
+];
+
+armorMats.forEach(t => {
+  RECIPES.push({id:t.lbl.toLowerCase()+'_helmet',name:t.lbl+' Helmet',cat:'Armor',icon:getIcon(t.lbl.toLowerCase()+'_helmet'),desc:`Mũ ${t.lbl}`,grid:[t.mat,t.mat,t.mat,t.mat,null,t.mat,null,null,null],count:1});
+  RECIPES.push({id:t.lbl.toLowerCase()+'_chestplate',name:t.lbl+' Chestplate',cat:'Armor',icon:getIcon(t.lbl.toLowerCase()+'_chestplate'),desc:`Áo giáp ${t.lbl}`,grid:[t.mat,null,t.mat,t.mat,t.mat,t.mat,t.mat,t.mat,t.mat],count:1});
+  RECIPES.push({id:t.lbl.toLowerCase()+'_leggings',name:t.lbl+' Leggings',cat:'Armor',icon:getIcon(t.lbl.toLowerCase()+'_leggings'),desc:`Quần ${t.lbl}`,grid:[t.mat,t.mat,t.mat,t.mat,null,t.mat,t.mat,null,t.mat],count:1});
+  RECIPES.push({id:t.lbl.toLowerCase()+'_boots',name:t.lbl+' Boots',cat:'Armor',icon:getIcon(t.lbl.toLowerCase()+'_boots'),desc:`Giày ${t.lbl}`,grid:[null,null,null,t.mat,null,t.mat,t.mat,null,t.mat],count:1});
+});
+
+// Redstone (Đá đỏ)
+RECIPES.push({id:'redstone_torch',name:'Redstone Torch',cat:'Redstone',icon:getIcon('redstone_torch'),desc:'Đuốc redstone',grid:[null,null,null,null,I('redstone'),null,null,I('stick'),null],count:1});
+RECIPES.push({id:'repeater',name:'Repeater',cat:'Redstone',icon:getIcon('repeater'),desc:'Bộ lặp tín hiệu',grid:[null,null,null,I('redstone_torch'),I('redstone'),I('redstone_torch'),I('cobblestone'),I('cobblestone'),I('cobblestone')],count:1});
+RECIPES.push({id:'comparator',name:'Comparator',cat:'Redstone',icon:getIcon('comparator'),desc:'Bộ so sánh',grid:[null,I('redstone_torch'),null,I('redstone_torch'),I('nether_quartz'),I('redstone_torch'),I('cobblestone'),I('cobblestone'),I('cobblestone')],count:1});
+RECIPES.push({id:'piston',name:'Piston',cat:'Redstone',icon:getIcon('piston'),desc:'Pít-tông đẩy',grid:[I('oak_planks'),I('oak_planks'),I('oak_planks'),I('cobblestone'),I('iron_ingot'),I('cobblestone'),I('cobblestone'),I('redstone'),I('cobblestone')],count:1});
+RECIPES.push({id:'observer',name:'Observer',cat:'Redstone',icon:getIcon('observer'),desc:'Quan sát block',grid:[I('cobblestone'),I('cobblestone'),I('cobblestone'),I('redstone'),I('redstone'),I('nether_quartz'),I('cobblestone'),I('cobblestone'),I('cobblestone')],count:1});
+
+// Food / Nông sản
+RECIPES.push({id:'bread',name:'Bread',cat:'Food',icon:getIcon('bread'),desc:'3 Wheat',grid:[null,null,null,I('wheat'),I('wheat'),I('wheat'),null,null,null],count:1});
+RECIPES.push({id:'cookie',name:'Cookie',cat:'Food',icon:getIcon('cookie'),desc:'Wheat + Cocoa Beans',grid:[null,null,null,I('wheat'),I('cocoa_beans'),I('wheat'),null,null,null],count:8});
+RECIPES.push({id:'cake',name:'Cake',cat:'Food',icon:getIcon('cake'),desc:'Milk + Sugar + Egg + Wheat',grid:[I('milk_bucket'),I('milk_bucket'),I('milk_bucket'),I('sugar'),I('egg'),I('sugar'),I('wheat'),I('wheat'),I('wheat')],count:1});
+RECIPES.push({id:'golden_carrot',name:'Golden Carrot',cat:'Food',icon:getIcon('golden_carrot'),desc:'Carrot + Gold Nugget',grid:[I('gold_nugget'),I('gold_nugget'),I('gold_nugget'),I('gold_nugget'),I('carrot'),I('gold_nugget'),I('gold_nugget'),I('gold_nugget'),I('gold_nugget')],count:1});
+
+// Misc / Build
+RECIPES.push({id:'furnace',name:'Furnace',cat:'Build',icon:getIcon('furnace'),desc:'8 Cobblestone',grid:[I('cobblestone'),I('cobblestone'),I('cobblestone'),I('cobblestone'),null,I('cobblestone'),I('cobblestone'),I('cobblestone'),I('cobblestone')],count:1});
+RECIPES.push({id:'chest',name:'Chest',cat:'Build',icon:getIcon('chest'),desc:'8 Planks',grid:[I('oak_planks'),I('oak_planks'),I('oak_planks'),I('oak_planks'),null,I('oak_planks'),I('oak_planks'),I('oak_planks'),I('oak_planks')],count:1});
+RECIPES.push({id:'torch',name:'Torch',cat:'Build',icon:getIcon('torch'),desc:'Coal + Stick',grid:[null,I('coal'),null,null,I('stick'),null,null,null,null],count:4});
+
+// ========== RENDER ==========
+const CATS = ['All','Build','Tools','Combat','Armor','Food','Redstone','Misc'];
 let currentCat = 'All';
 let currentSearch = '';
 
 const catContainer = document.getElementById('categories');
-CATS.forEach(c => {
-  const b = document.createElement('button');
-  b.className = `cat-btn ${c==='All' ? 'active' : ''}`;
-  b.textContent = c;
-  b.onclick = () => {
-    currentCat = c;
-    document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
+CATS.forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = `cat-btn ${cat === 'All' ? 'active' : ''}`;
+  btn.textContent = cat;
+  btn.onclick = () => {
+    currentCat = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
     renderGrid();
   };
-  catContainer.appendChild(b);
+  catContainer.appendChild(btn);
 });
 
-const grid = document.getElementById('recipeGrid');
+const gridEl = document.getElementById('recipeGrid');
 
 function renderGrid() {
-  grid.innerHTML = '';
-  const filtered = RECIPES.filter(r => {
-    const catOk = currentCat === 'All' || r.cat === currentCat;
-    const searchOk = !currentSearch || r.name.toLowerCase().includes(currentSearch);
-    return catOk && searchOk;
-  });
+  gridEl.innerHTML = '';
+  const filtered = RECIPES.filter(r => 
+    (currentCat === 'All' || r.cat === currentCat) &&
+    (!currentSearch || r.name.toLowerCase().includes(currentSearch))
+  );
 
-  if (!filtered.length) {
-    grid.innerHTML = '<div class="no-results">😢 Không tìm thấy công thức nào.</div>';
+  if (filtered.length === 0) {
+    gridEl.innerHTML = '<div class="no-results">😢 Không tìm thấy công thức nào</div>';
     return;
   }
 
@@ -209,22 +214,23 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'recipe-card';
     card.innerHTML = `
-      <img class="icon" src="${r.icon}" onerror="this.src='https://minecraft.wiki/images/Barrier_JE2_BE2.png'">
-      <div class="name">${r.name}</div>
-      <div class="cat">${r.cat}</div>`;
-    card.onclick = () => openModal(r);
-    grid.appendChild(card);
+      <img src="${r.icon}" onerror="this.src='https://minecraft.wiki/images/Barrier_JE2_BE2.png'">
+      <div style="font-weight:700;margin:8px 0 4px;">${r.name}</div>
+      <div style="font-size:0.85rem;color:#b8ffd0;">${r.cat}</div>
+    `;
+    card.onclick = () => showModal(r);
+    gridEl.appendChild(card);
   });
 }
 
-function openModal(r) {
+function showModal(r) {
   document.getElementById('modalTitle').textContent = r.name;
   document.getElementById('modalDesc').textContent = r.desc;
   document.getElementById('resultName').textContent = r.name;
-  document.getElementById('resultCount').textContent = r.count > 1 ? r.count : '';
 
-  const craftGridEl = document.getElementById('craftGrid');
-  craftGridEl.innerHTML = '';
+  const craftGrid = document.getElementById('craftGrid');
+  craftGrid.innerHTML = '';
+
   for (let i = 0; i < 9; i++) {
     const slot = document.createElement('div');
     slot.className = 'craft-slot';
@@ -232,41 +238,36 @@ function openModal(r) {
     if (item) {
       slot.innerHTML = `<img src="${item.icon}" onerror="this.src='https://minecraft.wiki/images/Barrier_JE2_BE2.png'">`;
     }
-    craftGridEl.appendChild(slot);
+    craftGrid.appendChild(slot);
   }
 
   const resultImg = document.getElementById('resultImg');
   resultImg.src = r.icon;
-  resultImg.onerror = () => { resultImg.src = 'https://minecraft.wiki/images/Barrier_JE2_BE2.png'; };
+  resultImg.onerror = () => resultImg.src = 'https://minecraft.wiki/images/Barrier_JE2_BE2.png';
 
   document.getElementById('modalOverlay').classList.add('active');
 }
 
-// Search
+// Search & Close
 document.getElementById('searchInput').addEventListener('input', e => {
-  currentSearch = e.target.value.trim().toLowerCase();
+  currentSearch = e.target.value.toLowerCase().trim();
   renderGrid();
 });
-
-// Close modal
 document.getElementById('modalClose').onclick = () => document.getElementById('modalOverlay').classList.remove('active');
 document.getElementById('modalOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('modalOverlay')) document.getElementById('modalOverlay').classList.remove('active');
+  if (e.target.id === 'modalOverlay') document.getElementById('modalOverlay').classList.remove('active');
 });
 
-// Audio (giữ nguyên)
-const audioCtrl = document.getElementById('audioCtrl');
-let audioOn = false;
-audioCtrl.onclick = () => {
-  audioOn = !audioOn;
-  audioCtrl.textContent = audioOn ? '🔊' : '🔇';
+// Audio
+document.getElementById('audioCtrl').onclick = function() {
+  this.textContent = this.textContent === '🔊' ? '🔇' : '🔊';
 };
 
-// Init
+// Khởi động
 renderGrid();
 window.addEventListener('load', () => {
-  const mace = RECIPES.find(r => r.id === 'mace');
-  if (mace) openModal(mace);
+  const maceRecipe = RECIPES.find(r => r.id === 'mace');
+  if (maceRecipe) showModal(maceRecipe);
 });
 </script>
 </body>
